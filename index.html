@@ -332,6 +332,19 @@ button{cursor:default}
 }
 .window:not(.active-win) .titlebar-title{color:var(--text-2)}
 .win-body{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--win-body);overflow:hidden;position:relative}
+body.win-dragging iframe{pointer-events:none!important}
+
+/* Game App Shell (Saltline / DustBlock CS) */
+.game-shell{display:flex;flex-direction:column;width:100%;height:100%;min-height:0;background:#090b10}
+.game-toolbar{
+  height:36px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 12px;
+  border-bottom:1px solid var(--hairline);background:var(--toolbar-bg);font-size:12px;color:var(--text-2);
+}
+.game-hint{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:8px}
+.game-pill{padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;background:rgba(10,132,255,.16);color:#60a5fa;border:1px solid rgba(10,132,255,.28)}
+.game-actions{display:flex;align-items:center;gap:6px;flex:none}
+.game-frame-wrap{flex:1;min-height:0;position:relative;background:#07090d}
+.game-frame{width:100%;height:100%;border:0;display:block;background:#07090d}
 
 /* Unified Sidebar Layout (Finder / Notes / Settings) */
 .unified-shell{display:grid;grid-template-columns:196px 1fr;height:100%;width:100%}
@@ -810,6 +823,8 @@ const APPS = [
   {id:'music',     name:'音乐',     title:'XXUUS Music', w:780, h:530, dock:true},
   {id:'portfolio', name:'作品集',   title:'个人作品集', w:820, h:540, dock:true},
   {id:'lab',       name:'AI 实验室',title:'AI 实验室',  w:800, h:520, dock:true},
+  {id:'saltline',  name:'Saltline',  title:'Saltline 盐线 · 港口战术 FPS', w:980, h:620, dock:true},
+  {id:'csgo',      name:'沙城行动',  title:'沙城行动 · 方块版 CS:GO', w:980, h:620, dock:true},
   {id:'terminal',  name:'终端',     title:'终端 — zsh', w:680, h:430, dock:true},
   {id:'calculator',name:'计算器',   title:'计算器',     w:300, h:450, dock:true, noResize:true},
   {id:'settings',  name:'系统设置', title:'系统设置',   w:740, h:520, dock:true},
@@ -869,7 +884,9 @@ const VFS = {
     {name:'我的作品集', kind:'app', target:'portfolio', size:'--'},
     {name:'AI 实验室', kind:'app', target:'lab', size:'--'},
     {name:'README.md', kind:'file', size:'4 KB', content:'欢迎使用 XXUUS OS 2.0 (Web Sequoia Edition)！\n\n这是一个 100% 离线可运行的纯前端仿真桌面系统：\n• 无需服务器：直接托管于 GitHub Pages 或本地打开\n• 矢量重绘图标：彻底告别粗糙 Emoji\n• 真实交互细节：Dock 高斯波浪放大、聚焦搜索、控制中心、WebAudio 合成音乐、可读写备忘录。\n\n未来如需多人光标同步或跨设备账号，再按需接入 Supabase Realtime / Cloudflare Workers 即可。'},
-    {name:'关于 XXUUS', kind:'app', target:'about', size:'--'}
+    {name:'关于 XXUUS', kind:'app', target:'about', size:'--'},
+    {name:'Saltline 盐线.app', kind:'app', target:'saltline', size:'WebGL 3D'},
+    {name:'沙城行动 CS.app', kind:'app', target:'csgo', size:'WebGL 3D'}
   ],
   documents: [
     {name:'XXUUS_架构规划.txt', kind:'file', size:'7 KB', content:'阶段一：纯静态离线旗舰桌面体验（当前阶段）\n阶段二：补充真实作品链接、截图与 3D 展示模型\n阶段三：接入 Supabase Realtime 实现轻量级访客在线人数与互动气泡'},
@@ -882,6 +899,8 @@ const VFS = {
     {name:'AI 创意实验', kind:'app', target:'lab', size:'AI'}
   ],
   downloads: [
+    {name:'Saltline.html', kind:'app', target:'saltline', size:'89 KB'},
+    {name:'沙城行动 (DustBlock CS).html', kind:'app', target:'csgo', size:'820 KB'},
     {name:'红尘客栈-周杰伦.mp3', kind:'app', target:'music', size:'10.9 MB'},
     {name:'红尘客栈-周杰伦.lrc', kind:'file', size:'1.5 KB', content:JAY_LRC_TEXT},
     {name:'index.html', kind:'file', size:'单文件离线版', content:'这就是你正在运行的 XXUUS OS Liquid Glass 旗舰版！'}
@@ -1072,6 +1091,29 @@ function getAppIconSVG(id, size=48){
       <rect x="12" y="15" width="40" height="26" rx="4" fill="#38bdf8" fill-opacity=".22" stroke="#f1f5f9" stroke-width="2.2"/>
       <path d="M26 41L24 47H40L38 41" fill="#cbd5e1"/>
       <path d="M18 48H46" stroke="#f1f5f9" stroke-width="2.4" stroke-linecap="round"/>`,
+    saltline: `
+      <defs>
+        <linearGradient id="slBg-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e293b"/><stop offset="55%" stop-color="#0f172a"/><stop offset="100%" stop-color="#070b14"/></linearGradient>
+        <linearGradient id="slAmber-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#d97706"/></linearGradient>
+      </defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#slBg-${u})"/>
+      <rect x="12" y="34" width="22" height="12" rx="2.5" fill="#1d4ed8" stroke="#60a5fa" stroke-opacity=".45" stroke-width="1"/>
+      <rect x="31" y="30" width="21" height="16" rx="2.5" fill="#b45309" stroke="#fbbf24" stroke-opacity=".55" stroke-width="1"/>
+      <path d="M12 49H52" stroke="#38bdf8" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="32" cy="25" r="10.5" fill="none" stroke="url(#slAmber-${u})" stroke-width="2.2"/>
+      <circle cx="32" cy="25" r="2.6" fill="#fbbf24"/>
+      <path d="M32 11.5V17M32 33V38.5M18.5 25H24M40 25H45.5" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>`,
+    csgo: `
+      <defs>
+        <linearGradient id="csBg-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="55%" stop-color="#b45309"/><stop offset="100%" stop-color="#451a03"/></linearGradient>
+        <linearGradient id="csCube-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fde68a"/><stop offset="100%" stop-color="#d97706"/></linearGradient>
+      </defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#csBg-${u})"/>
+      <polygon points="32,12 50,22 32,32 14,22" fill="url(#csCube-${u})"/>
+      <polygon points="14,22 32,32 32,52 14,42" fill="#92400e"/>
+      <polygon points="50,22 32,32 32,52 50,42" fill="#78350f"/>
+      <circle cx="32" cy="32" r="10" fill="none" stroke="#fff" stroke-opacity=".9" stroke-width="2"/>
+      <path d="M32 18V25M32 39V46M18 32H25M39 32H46" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>`,
     launchpad: `
       <defs><linearGradient id="lpBg-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff" stop-opacity=".92"/><stop offset="100%" stop-color="#d8dee9" stop-opacity=".9"/></linearGradient></defs>
       <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#lpBg-${u})"/>
@@ -1176,7 +1218,9 @@ const DESKTOP_ITEMS = [
   {id:'di-finder', name:'Macintosh HD', icon:'finder', x:null, y:20, action:()=>openApp('finder')},
   {id:'di-port',   name:'个人作品集', icon:'portfolio', x:null, y:125, action:()=>openApp('portfolio')},
   {id:'di-lab',    name:'AI 实验室', icon:'lab', x:null, y:230, action:()=>openApp('lab')},
-  {id:'di-readme', name:'README.md', icon:'file', x:null, y:335, action:()=>openFilePreview('README.md', VFS.desktop[2].content)}
+  {id:'di-readme', name:'README.md', icon:'file', x:null, y:335, action:()=>openFilePreview('README.md', VFS.desktop[2].content)},
+  {id:'di-salt',   name:'Saltline 盐线', icon:'saltline', x:null, y:20, action:()=>openApp('saltline')},
+  {id:'di-csgo',   name:'沙城行动 CS', icon:'csgo', x:null, y:125, action:()=>openApp('csgo')}
 ];
 
 function buildDesktopIcons(){
@@ -1186,8 +1230,10 @@ function buildDesktopIcons(){
   DESKTOP_ITEMS.forEach((item,idx)=>{
     const el = document.createElement('button');
     el.className = 'desk-item';
-    el.style.right = '18px';
-    el.style.top = (14 + idx*104) + 'px';
+    const col = Math.floor(idx / 4);
+    const row = idx % 4;
+    el.style.right = (18 + col * 100) + 'px';
+    el.style.top = (14 + row * 104) + 'px';
     el.innerHTML = `<div class="icon-box">${getAppIconSVG(item.icon, 48)}</div><span class="desk-label">${item.name}</span>`;
     el.addEventListener('click', e=>{
       e.stopPropagation();
@@ -1370,6 +1416,7 @@ function closeWin(id, e){
   if(e) e.stopPropagation();
   const w = STATE.windows[id];
   if(!w) return;
+  w.querySelectorAll('iframe').forEach(fr=>{ try{ fr.src = 'about:blank'; }catch(err){} });
   w.remove();
   delete STATE.windows[id];
   updateDockDots();
@@ -1394,13 +1441,25 @@ function zoomWin(id, e){
   if(w && !APPS.find(a=>a.id===id)?.noResize) w.classList.toggle('maximized');
 }
 
+window.addEventListener('blur', ()=>{
+  setTimeout(()=>{
+    const active = document.activeElement;
+    if(active && active.tagName === 'IFRAME'){
+      const w = active.closest('.window[id^="win-"]');
+      if(w) focusWin(w.id.replace(/^win-/, ''));
+    }
+  }, 0);
+});
+
 function wireWindowPhysics(win, id, noResize){
   win.addEventListener('mousedown', ()=>focusWin(id));
   win.querySelectorAll('[data-drag-handle]').forEach(bar=>{
     let dragging=false, sx=0, sy=0, sl=0, st=0;
+    const stopDrag = ()=>{ dragging=false; document.body.classList.remove('win-dragging'); };
     bar.addEventListener('pointerdown', e=>{
       if(e.target.closest('button,input,select,.traffic') || win.classList.contains('maximized')) return;
       dragging=true; sx=e.clientX; sy=e.clientY;
+      document.body.classList.add('win-dragging');
       const r = win.getBoundingClientRect(); sl=r.left; st=r.top;
       bar.setPointerCapture(e.pointerId);
     });
@@ -1409,7 +1468,8 @@ function wireWindowPhysics(win, id, noResize){
       win.style.left = Math.max(-win.offsetWidth+120, Math.min(window.innerWidth-120, sl+e.clientX-sx)) + 'px';
       win.style.top = Math.max(28, Math.min(window.innerHeight-70, st+e.clientY-sy)) + 'px';
     });
-    bar.addEventListener('pointerup', ()=>dragging=false);
+    bar.addEventListener('pointerup', stopDrag);
+    bar.addEventListener('pointercancel', stopDrag);
     bar.addEventListener('dblclick', e=>{
       if(!e.target.closest('button,input')) zoomWin(id);
     });
@@ -1420,9 +1480,11 @@ function wireWindowPhysics(win, id, noResize){
     const h = win.querySelector('.resizer-'+dir);
     if(!h) return;
     let rs=false, sw=0, sh=0, rx=0, ry=0;
+    const stopRs = ()=>{ rs=false; document.body.classList.remove('win-dragging'); };
     h.addEventListener('pointerdown', e=>{
       if(win.classList.contains('maximized')) return;
       rs=true; sw=win.offsetWidth; sh=win.offsetHeight; rx=e.clientX; ry=e.clientY;
+      document.body.classList.add('win-dragging');
       h.setPointerCapture(e.pointerId); e.stopPropagation();
     });
     h.addEventListener('pointermove', e=>{
@@ -1430,7 +1492,8 @@ function wireWindowPhysics(win, id, noResize){
       if(dir==='r'||dir==='br') win.style.width = Math.max(320, sw+e.clientX-rx)+'px';
       if(dir==='b'||dir==='br') win.style.height = Math.max(220, sh+e.clientY-ry)+'px';
     });
-    h.addEventListener('pointerup', ()=>rs=false);
+    h.addEventListener('pointerup', stopRs);
+    h.addEventListener('pointercancel', stopRs);
   });
 }
 
@@ -1705,7 +1768,53 @@ function renderAppContent(id){
       </div>
     </div>`;
   }
+  if(id==='saltline'){
+    return renderGameShell('saltline', './Saltline.html', '点击画面锁定鼠标瞄准 · Esc 暂停 · 支持 EN/中文 切换');
+  }
+  if(id==='csgo'){
+    return renderGameShell('csgo', './csgo/DustBlock.html', 'WASD 移动 · 点击战场锁定鼠标 · B 商店 · 1-4 切武器 · Esc 暂停');
+  }
   return '';
+}
+
+function renderGameShell(id, src, hint){
+  return `
+    <div class="game-shell">
+      <div class="game-toolbar">
+        <div class="game-hint">
+          <span class="game-pill">WebGL 3D</span>
+          <span>${hint}</span>
+        </div>
+        <div class="game-actions">
+          <button class="btn-mac" onclick="gameWindowAction('${id}','reload','${src}')">重新载入</button>
+          <button class="btn-mac btn-primary" onclick="gameWindowAction('${id}','fullscreen','${src}')">全屏游玩</button>
+          <button class="btn-mac" onclick="gameWindowAction('${id}','external','${src}')">新标签打开 ↗</button>
+        </div>
+      </div>
+      <div class="game-frame-wrap" id="game-wrap-${id}">
+        <iframe id="game-frame-${id}" class="game-frame" src="${src}" allow="fullscreen; pointer-lock; autoplay" allowfullscreen loading="eager"></iframe>
+      </div>
+    </div>`;
+}
+
+function gameWindowAction(id, action, src){
+  const frame = document.getElementById('game-frame-' + id);
+  const wrap = document.getElementById('game-wrap-' + id);
+  if(action === 'reload' && frame){
+    frame.src = src;
+    toast('已重新载入游戏');
+  } else if(action === 'fullscreen'){
+    const target = wrap || frame;
+    if(target && target.requestFullscreen){
+      target.requestFullscreen().then(()=>{
+        try{ frame?.contentWindow?.focus(); }catch(e){}
+      }).catch(()=>{
+        toast('浏览器拦截了全屏请求，可点击「新标签打开」');
+      });
+    }
+  } else if(action === 'external'){
+    window.open(src, '_blank', 'noopener');
+  }
 }
 
 function initAppRuntime(id, win){
@@ -2005,7 +2114,7 @@ function initTerminal(win){
       const t = (args[0]||'').toLowerCase();
       const found = APPS.find(a=>a.id===t || a.name.toLowerCase()===t);
       if(found){ openApp(found.id); res='正在打开 '+found.name+'...'; }
-      else res='未找到应用。可输入：finder, safari, notes, calendar, calculator, music, portfolio, lab, settings';
+      else res='未找到应用。可输入：finder, safari, notes, calendar, calculator, music, portfolio, lab, saltline, csgo, settings';
     }
     else if(cmd==='neofetch'){
       res = `   __  __ __  __ _   _ _   _ ____     OS: XXUUS OS Sequoia Web 2.0\n   \\ \\/ / \\ \\/ /| | | | | | / ___|    Host: Browser Offline Runtime\n    \\  /   \\  / | | | | | | \\___ \\    Theme: ${STATE.theme} / Accent: ${STATE.accent}\n    /  \\   /  \\ | |_| | |_| |___) |   Shell: zsh 5.9 (simulated)\n   /_/\\_\\ /_/\\_\\ \\___/ \\___/|____/    Deploy: xxuus.com/os/`;
