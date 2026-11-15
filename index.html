@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark" data-accent="blue">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d111a">
+<title>XXUUS OS — Web Desktop</title>
+<style>
+:root{
+  --accent:#0a84ff;
+  --accent-soft:rgba(10,132,255,.22);
+  --accent-ring:rgba(10,132,255,.45);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC","Helvetica Neue",sans-serif;
+  --mono:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --radius-win:14px;
+  --menubar-h:28px;
+}
+
+html[data-accent="blue"]{--accent:#0a84ff;--accent-soft:rgba(10,132,255,.22);--accent-ring:rgba(10,132,255,.45)}
+html[data-accent="purple"]{--accent:#bf5af2;--accent-soft:rgba(191,90,242,.22);--accent-ring:rgba(191,90,242,.45)}
+html[data-accent="pink"]{--accent:#ff375f;--accent-soft:rgba(255,55,95,.22);--accent-ring:rgba(255,55,95,.45)}
+html[data-accent="orange"]{--accent:#ff9f0a;--accent-soft:rgba(255,159,10,.22);--accent-ring:rgba(255,159,10,.45)}
+html[data-accent="green"]{--accent:#30d158;--accent-soft:rgba(48,209,88,.22);--accent-ring:rgba(48,209,88,.45)}
+
+html[data-theme="dark"]{
+  --text:#f5f5f7;
+  --text-2:rgba(245,245,247,.68);
+  --text-3:rgba(245,245,247,.42);
+  --menubar-bg:rgba(22,24,31,.48);
+  --menubar-border:rgba(255,255,255,.10);
+  --menubar-text:#f5f5f7;
+  --win-bg:rgba(30,32,38,.78);
+  --win-body:rgba(24,25,30,.72);
+  --sidebar-bg:rgba(28,30,36,.52);
+  --toolbar-bg:rgba(38,40,48,.58);
+  --card-bg:rgba(255,255,255,.06);
+  --card-hover:rgba(255,255,255,.10);
+  --border-outer:rgba(0,0,0,.52);
+  --border-inner:rgba(255,255,255,.15);
+  --hairline:rgba(255,255,255,.09);
+  --dock-bg:rgba(28,30,38,.44);
+  --dock-border:rgba(255,255,255,.18);
+  --popover-bg:rgba(36,38,46,.82);
+  --input-bg:rgba(0,0,0,.28);
+  --shadow-active:0 28px 80px rgba(0,0,0,.58),0 8px 24px rgba(0,0,0,.35);
+  --shadow-inactive:0 12px 36px rgba(0,0,0,.32);
+}
+
+html[data-theme="light"]{
+  --text:#1d1d1f;
+  --text-2:rgba(29,29,31,.66);
+  --text-3:rgba(29,29,31,.42);
+  --menubar-bg:rgba(255,255,255,.52);
+  --menubar-border:rgba(0,0,0,.07);
+  --menubar-text:#1d1d1f;
+  --win-bg:rgba(250,250,252,.82);
+  --win-body:rgba(255,255,255,.78);
+  --sidebar-bg:rgba(238,240,245,.62);
+  --toolbar-bg:rgba(246,247,250,.72);
+  --card-bg:rgba(0,0,0,.035);
+  --card-hover:rgba(0,0,0,.065);
+  --border-outer:rgba(0,0,0,.16);
+  --border-inner:rgba(255,255,255,.75);
+  --hairline:rgba(0,0,0,.08);
+  --dock-bg:rgba(255,255,255,.42);
+  --dock-border:rgba(255,255,255,.55);
+  --popover-bg:rgba(248,249,252,.86);
+  --input-bg:rgba(0,0,0,.055);
+  --shadow-active:0 26px 70px rgba(0,0,0,.24),0 6px 20px rgba(0,0,0,.12);
+  --shadow-inactive:0 10px 30px rgba(0,0,0,.12);
+}
+
+*{box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:var(--font);color:var(--text);background:#0c0f17;user-select:none}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:default}
+
+/* ========== WALLPAPER & DESKTOP ========== */
+#desktop{position:relative;width:100%;height:100%;overflow:hidden;isolation:isolate}
+#wallpaper{position:absolute;inset:-20px;z-index:-2;transition:opacity .45s ease;background-size:cover;background-position:center}
+#wallpaper-canvas{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.85}
+#wallpaper-svg{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+
+#selection-box{
+  position:absolute;z-index:5;display:none;pointer-events:none;
+  background:rgba(10,132,255,.18);border:1px solid rgba(10,132,255,.7);border-radius:3px;
+}
+
+/* ========== BOOT SCREEN ========== */
+#boot{
+  position:fixed;inset:0;z-index:99999;background:#000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;
+  transition:opacity .55s ease,visibility .55s ease;
+}
+#boot.done{opacity:0;visibility:hidden;pointer-events:none}
+.boot-bar{width:190px;height:4px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}
+.boot-fill{height:100%;width:0%;background:#fff;border-radius:99px;transition:width 1.1s cubic-bezier(.22,1,.36,1)}
+.boot-skip{position:absolute;bottom:28px;font-size:12px;color:rgba(255,255,255,.45);background:transparent;border:0;cursor:pointer}
+.boot-skip:hover{color:rgba(255,255,255,.8)}
+
+/* ========== MENU BAR ========== */
+#menubar{
+  position:absolute;top:0;left:0;right:0;height:var(--menubar-h);z-index:10000;
+  display:flex;align-items:center;padding:0 10px;
+  background:var(--menubar-bg);
+  backdrop-filter:blur(32px) saturate(185%);-webkit-backdrop-filter:blur(32px) saturate(185%);
+  border-bottom:1px solid var(--menubar-border);
+  color:var(--menubar-text);font-size:13px;font-weight:500;
+}
+.mb-left,.mb-right{display:flex;align-items:center;height:100%}
+.mb-right{margin-left:auto;gap:2px}
+.mb-item{
+  height:22px;padding:0 9px;border-radius:5px;border:0;background:transparent;
+  display:inline-flex;align-items:center;gap:5px;font-size:13px;white-space:nowrap;
+  transition:background .1s;
+}
+.mb-item:hover,.mb-item.open{background:rgba(128,128,128,.22)}
+.mb-appname{font-weight:700;padding:0 10px}
+.mb-icon-btn{padding:0 7px}
+#mb-clock{font-variant-numeric:tabular-nums;font-size:12.5px;padding:0 8px}
+
+/* ========== DROPDOWN MENUS & POPOVERS ========== */
+.mac-menu{
+  position:absolute;z-index:30000;min-width:210px;padding:5px;
+  border-radius:10px;background:var(--popover-bg);
+  backdrop-filter:blur(42px) saturate(190%);-webkit-backdrop-filter:blur(42px) saturate(190%);
+  border:1px solid var(--border-inner);
+  box-shadow:0 16px 46px rgba(0,0,0,.38),0 0 0 .5px var(--border-outer);
+  display:none;flex-direction:column;gap:1px;
+  animation:popIn .12s cubic-bezier(.2,.8,.2,1);
+}
+.mac-menu.show{display:flex}
+@keyframes popIn{from{opacity:0;transform:scale(.96) translateY(-3px)}to{opacity:1;transform:none}}
+.mac-menu-btn{
+  border:0;background:transparent;border-radius:6px;padding:5px 10px;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  font-size:13px;text-align:left;width:100%;
+}
+.mac-menu-btn:hover{background:var(--accent);color:#fff}
+.mac-menu-btn:hover .kbd{color:rgba(255,255,255,.85)}
+.mac-menu-btn .kbd{font-size:11.5px;color:var(--text-3);font-family:var(--font)}
+.mac-sep{height:1px;background:var(--hairline);margin:4px 8px}
+
+/* Control Center */
+#control-center{
+  position:absolute;top:34px;right:10px;z-index:29000;width:316px;padding:12px;
+  border-radius:16px;background:var(--popover-bg);
+  backdrop-filter:blur(44px) saturate(190%);-webkit-backdrop-filter:blur(44px) saturate(190%);
+  border:1px solid var(--border-inner);
+  box-shadow:0 20px 55px rgba(0,0,0,.42),0 0 0 .5px var(--border-outer);
+  display:none;flex-direction:column;gap:10px;
+  animation:popIn .14s cubic-bezier(.2,.8,.2,1);
+}
+#control-center.show{display:flex}
+.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cc-card{
+  background:var(--card-bg);border:1px solid var(--hairline);border-radius:13px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;
+}
+.cc-row{display:flex;align-items:center;gap:9px;cursor:pointer;padding:2px;border-radius:8px}
+.cc-circle{
+  width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(128,128,128,.25);color:var(--text);flex:none;transition:background .15s;
+}
+.cc-circle.on{background:var(--accent);color:#fff}
+.cc-label{font-size:12px;font-weight:600;line-height:1.2}
+.cc-sub{font-size:10.5px;color:var(--text-2);font-weight:400}
+.cc-tile-btn{
+  border:1px solid var(--hairline);background:var(--card-bg);border-radius:13px;
+  padding:10px;display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;
+  transition:background .15s;
+}
+.cc-tile-btn:hover{background:var(--card-hover)}
+.cc-slider-wrap{display:flex;align-items:center;gap:8px}
+.cc-slider{
+  -webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:99px;
+  background:rgba(128,128,128,.3);outline:none;cursor:pointer;
+}
+.cc-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 5px rgba(0,0,0,.35);
+}
+
+/* Notification / Date Widget */
+#notif-center{
+  position:absolute;top:34px;right:10px;z-index:29000;width:300px;padding:14px;
+  border-radius:16px;background:var(--popover-bg);
+  backdrop-filter:blur(44px) saturate(190%);-webkit-backdrop-filter:blur(44px) saturate(190%);
+  border:1px solid var(--border-inner);box-shadow:0 20px 55px rgba(0,0,0,.42);
+  display:none;flex-direction:column;gap:12px;animation:popIn .14s ease;
+}
+#notif-center.show{display:flex}
+
+/* ========== DESKTOP ICONS ========== */
+#desktop-icons{position:absolute;inset:calc(var(--menubar-h) + 12px) 12px 92px 12px;z-index:2;pointer-events:none}
+.desk-item{
+  position:absolute;width:82px;padding:6px 4px;border-radius:8px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  pointer-events:auto;border:1px solid transparent;background:transparent;
+  cursor:default;transition:background .12s;
+}
+.desk-item .icon-box{width:54px;height:54px;display:grid;place-items:center;filter:drop-shadow(0 6px 12px rgba(0,0,0,.35))}
+.desk-item .desk-label{
+  font-size:11.5px;font-weight:500;color:#fff;text-align:center;line-height:1.25;
+  padding:2px 6px;border-radius:4px;text-shadow:0 1px 3px rgba(0,0,0,.85);
+  word-break:break-word;
+}
+.desk-item.selected .icon-box{background:rgba(255,255,255,.16);border-radius:12px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
+.desk-item.selected .desk-label{background:var(--accent);text-shadow:none}
+
+/* ========== DOCK ========== */
+#dock-container{
+  position:absolute;left:0;right:0;bottom:8px;z-index:9500;
+  display:flex;justify-content:center;pointer-events:none;
+}
+#dock{
+  pointer-events:auto;
+  display:flex;align-items:flex-end;gap:6px;padding:6px 10px 7px;
+  border-radius:20px;background:var(--dock-bg);
+  backdrop-filter:blur(36px) saturate(185%);-webkit-backdrop-filter:blur(36px) saturate(185%);
+  border:1px solid var(--dock-border);
+  box-shadow:0 16px 45px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.28);
+  height:66px;
+}
+.dock-item{
+  position:relative;width:50px;height:50px;border:0;padding:0;background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  transform-origin:bottom center;will-change:transform,width,height;
+  transition:transform .16s cubic-bezier(.22,1,.36,1),width .16s cubic-bezier(.22,1,.36,1),height .16s cubic-bezier(.22,1,.36,1);
+  cursor:pointer;
+}
+.dock-item.dragging-dock{transition:none}
+.dock-item svg{width:100%;height:100%;filter:drop-shadow(0 5px 10px rgba(0,0,0,.35));pointer-events:none}
+.dock-item .dock-tip{
+  position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(4px);
+  padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500;white-space:nowrap;
+  background:var(--popover-bg);color:var(--text);
+  border:1px solid var(--border-inner);box-shadow:0 6px 18px rgba(0,0,0,.28);
+  backdrop-filter:blur(24px);opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;
+}
+.dock-item:hover .dock-tip{opacity:1;transform:translateX(-50%) translateY(0)}
+.dock-item.running::after{
+  content:"";position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;background:var(--text);opacity:.88;
+}
+.dock-sep{width:1px;height:38px;margin:0 4px 6px;flex:none;background:rgba(255,255,255,.25)}
+.dock-bounce{animation:dockBounce .55s cubic-bezier(.28,.84,.42,1)}
+@keyframes dockBounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-16px)}70%{transform:translateY(-5px)}}
+
+/* ========== WINDOWS ========== */
+#windows{position:absolute;inset:0;pointer-events:none;z-index:20}
+.window{
+  position:absolute;pointer-events:auto;
+  min-width:300px;min-height:200px;
+  border-radius:var(--radius-win);
+  background:var(--win-bg);
+  backdrop-filter:blur(46px) saturate(180%);-webkit-backdrop-filter:blur(46px) saturate(180%);
+  box-shadow:var(--shadow-inactive),inset 0 0 0 1px var(--border-inner),0 0 0 .5px var(--border-outer);
+  overflow:hidden;display:flex;flex-direction:column;
+  transition:opacity .18s ease,transform .2s cubic-bezier(.22,1,.36,1),box-shadow .18s ease;
+  animation:winOpen .2s cubic-bezier(.22,1,.36,1);
+}
+.window.active-win{
+  box-shadow:var(--shadow-active),inset 0 0 0 1px var(--border-inner),0 0 0 .5px var(--border-outer);
+}
+@keyframes winOpen{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:none}}
+.window.minimized{opacity:0;transform:scale(.75) translateY(140px);pointer-events:none}
+.window.maximized{
+  left:0!important;top:var(--menubar-h)!important;
+  width:100vw!important;height:calc(100vh - var(--menubar-h) - 82px)!important;
+  border-radius:10px;
+}
+
+/* Traffic Lights */
+.traffic{display:flex;align-items:center;gap:8px;z-index:5;flex:none}
+.tl-btn{
+  width:12px;height:12px;border-radius:50%;border:0;padding:0;
+  display:grid;place-items:center;position:relative;
+  box-shadow:inset 0 0 0 .5px rgba(0,0,0,.22);transition:filter .12s,background .15s;
+}
+.tl-btn svg{opacity:0;transition:opacity .1s;width:8px;height:8px;color:rgba(0,0,0,.68)}
+.traffic:hover .tl-btn svg{opacity:1}
+.tl-close{background:#ff5f57}
+.tl-min{background:#febc2e}
+.tl-zoom{background:#28c840}
+.window:not(.active-win) .tl-btn{background:rgba(128,128,128,.35);box-shadow:none}
+.window:not(.active-win) .traffic:hover .tl-close{background:#ff5f57}
+.window:not(.active-win) .traffic:hover .tl-min{background:#febc2e}
+.window:not(.active-win) .traffic:hover .tl-zoom{background:#28c840}
+
+/* Standard Titlebar */
+.titlebar{
+  height:38px;flex:none;display:flex;align-items:center;padding:0 14px;position:relative;
+  border-bottom:1px solid var(--hairline);background:var(--toolbar-bg);cursor:default;
+}
+.titlebar-title{
+  position:absolute;left:50%;transform:translateX(-50%);
+  font-size:13px;font-weight:600;color:var(--text);pointer-events:none;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%;
+}
+.window:not(.active-win) .titlebar-title{color:var(--text-2)}
+.win-body{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--win-body);overflow:hidden;position:relative}
+
+/* Unified Sidebar Layout (Finder / Notes / Settings) */
+.unified-shell{display:grid;grid-template-columns:196px 1fr;height:100%;width:100%}
+.unified-sidebar{
+  background:var(--sidebar-bg);border-right:1px solid var(--hairline);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.sidebar-top{height:44px;display:flex;align-items:center;padding:0 14px;flex:none}
+.sidebar-scroll{flex:1;overflow:auto;padding:4px 10px 14px}
+.side-group-title{font-size:11px;font-weight:600;color:var(--text-3);padding:10px 10px 4px;letter-spacing:.2px}
+.side-item{
+  width:100%;border:0;background:transparent;border-radius:7px;padding:6px 10px;
+  display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);text-align:left;
+}
+.side-item:hover{background:var(--card-hover)}
+.side-item.active{background:rgba(128,128,128,.22);font-weight:500}
+.side-dot{width:10px;height:10px;border-radius:50%;flex:none}
+.unified-main{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--win-body)}
+.unified-toolbar{
+  height:44px;flex:none;display:flex;align-items:center;gap:8px;padding:0 14px;
+  border-bottom:1px solid var(--hairline);background:var(--toolbar-bg);
+}
+
+/* Resize Handle */
+.resizer{position:absolute;z-index:10}
+.resizer-br{right:0;bottom:0;width:14px;height:14px;cursor:nwse-resize}
+.resizer-r{right:0;top:38px;bottom:14px;width:5px;cursor:ew-resize}
+.resizer-b{left:14px;right:14px;bottom:0;height:5px;cursor:ns-resize}
+
+/* ========== SHARED UI COMPONENTS ========== */
+.scroll-pane{flex:1;overflow:auto;padding:20px}
+.btn-mac{
+  border:1px solid var(--hairline);background:var(--card-bg);border-radius:7px;
+  padding:5px 12px;font-size:12.5px;font-weight:500;cursor:pointer;
+  transition:background .12s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn-mac:hover{background:var(--card-hover)}
+.btn-primary{background:var(--accent);color:#fff;border-color:transparent}
+.btn-primary:hover{filter:brightness(1.08);background:var(--accent)}
+.btn-icon{
+  width:28px;height:26px;border-radius:6px;border:0;background:transparent;
+  display:grid;place-items:center;color:var(--text-2);cursor:pointer;
+}
+.btn-icon:hover{background:var(--card-hover);color:var(--text)}
+.btn-icon.active{background:var(--card-hover);color:var(--text)}
+.mac-input{
+  border:1px solid var(--hairline);background:var(--input-bg);border-radius:7px;
+  padding:6px 10px;font-size:13px;outline:none;transition:border-color .15s,box-shadow .15s;
+}
+.mac-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.tag-pill{
+  display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;
+  font-size:11px;font-weight:500;background:var(--accent-soft);color:var(--accent);
+}
+
+/* ========== APP: FINDER ========== */
+.finder-grid{padding:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));gap:14px;align-content:start;flex:1;overflow:auto}
+.finder-file{
+  display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;border-radius:9px;
+  cursor:default;text-align:center;border:1px solid transparent;
+}
+.finder-file:hover{background:var(--card-bg)}
+.finder-file.selected{background:var(--accent-soft);border-color:var(--accent-ring)}
+.finder-file .fname{font-size:12px;line-height:1.3;word-break:break-word}
+.finder-list{flex:1;overflow:auto;display:flex;flex-direction:column}
+.finder-row{
+  display:grid;grid-template-columns:1fr 110px 80px;padding:7px 16px;font-size:12.5px;
+  border-bottom:1px solid var(--hairline);align-items:center;cursor:default;
+}
+.finder-row:hover{background:var(--card-bg)}
+.finder-row.selected{background:var(--accent);color:#fff}
+.finder-status{height:24px;border-top:1px solid var(--hairline);padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-3);background:var(--toolbar-bg)}
+
+/* ========== APP: SAFARI ========== */
+.safari-top{background:var(--toolbar-bg);border-bottom:1px solid var(--hairline);padding:8px 14px;display:flex;align-items:center;gap:12px}
+.safari-url{
+  flex:1;max-width:460px;margin:0 auto;height:28px;border-radius:8px;
+  background:var(--input-bg);border:1px solid var(--hairline);
+  display:flex;align-items:center;padding:0 10px;gap:6px;
+}
+.safari-url input{flex:1;border:0;background:transparent;outline:none;font-size:12.5px;text-align:center}
+.safari-url input:focus{text-align:left}
+.safari-tabs{display:flex;background:var(--sidebar-bg);border-bottom:1px solid var(--hairline);padding:4px 8px 0;gap:4px}
+.safari-tab{
+  flex:1;max-width:200px;height:28px;border-radius:7px 7px 0 0;padding:0 10px;
+  display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-2);
+  cursor:pointer;background:transparent;border:0;
+}
+.safari-tab.active{background:var(--win-body);color:var(--text);font-weight:500}
+
+/* ========== APP: CALCULATOR ========== */
+.calc-wrap{height:100%;display:flex;flex-direction:column;background:#1c1c1e;color:#fff;padding:12px 14px 16px}
+.calc-display{
+  flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;
+  padding:8px 6px 12px;min-height:76px;
+}
+.calc-expr{font-size:14px;color:rgba(255,255,255,.45);min-height:18px;font-variant-numeric:tabular-nums}
+.calc-num{font-size:48px;font-weight:300;letter-spacing:-1px;line-height:1.05;font-variant-numeric:tabular-nums;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.calc-btn{
+  height:52px;border-radius:99px;border:0;font-size:21px;font-weight:400;
+  display:grid;place-items:center;cursor:pointer;transition:filter .1s,transform .06s;
+}
+.calc-btn:active{transform:scale(.95);filter:brightness(1.2)}
+.calc-fn{background:#a5a5a5;color:#000;font-size:18px;font-weight:500}
+.calc-op{background:#ff9f0a;color:#fff;font-size:24px}
+.calc-op.active-op{background:#fff;color:#ff9f0a}
+.calc-digit{background:#333336;color:#fff}
+.calc-zero{grid-column:span 2;justify-content:start;padding-left:22px}
+
+/* ========== APP: CALENDAR ========== */
+.cal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--hairline)}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--hairline);background:var(--toolbar-bg)}
+.cal-weekdays div{text-align:right;padding:6px 10px;font-size:11.5px;font-weight:600;color:var(--text-2)}
+.cal-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:1fr}
+.cal-cell{
+  border-right:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+  padding:6px 8px;display:flex;flex-direction:column;gap:4px;min-height:58px;
+}
+.cal-cell:nth-child(7n){border-right:0}
+.cal-day-num{align-self:flex-end;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:500}
+.cal-cell.other-month .cal-day-num{color:var(--text-3)}
+.cal-cell.today .cal-day-num{background:#ff3b30;color:#fff;font-weight:700}
+.cal-event{font-size:10.5px;padding:2px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ========== APP: TERMINAL ========== */
+.term-body{
+  flex:1;background:rgba(12,14,18,.92);color:#e4ece6;padding:14px 16px;
+  font-family:var(--mono);font-size:12.5px;line-height:1.6;overflow:auto;user-select:text;
+}
+.term-line{white-space:pre-wrap;word-break:break-word}
+.term-prompt{display:flex;align-items:center;gap:6px;margin-top:2px}
+.term-prompt span{color:#30d158;font-weight:600;white-space:nowrap}
+.term-prompt input{flex:1;background:transparent;border:0;outline:0;color:#fff;font-family:var(--mono);font-size:12.5px}
+
+/* ========== APP: NOTES ========== */
+.notes-list-item{padding:10px 12px;border-radius:8px;cursor:pointer;border-bottom:1px solid var(--hairline)}
+.notes-list-item.active{background:var(--accent);color:#fff}
+.notes-list-item.active .notes-meta{color:rgba(255,255,255,.8)}
+.notes-meta{font-size:11px;color:var(--text-3);margin-top:3px}
+.notes-editor{flex:1;border:0;background:transparent;outline:none;resize:none;padding:18px 26px;font-size:14px;line-height:1.75;user-select:text}
+
+/* ========== APP: MUSIC ========== */
+.music-disc{
+  width:118px;height:118px;border-radius:20px;margin:0 auto 14px;
+  display:grid;place-items:center;box-shadow:0 16px 36px rgba(0,0,0,.35);
+  position:relative;overflow:hidden;
+}
+.music-disc.playing{animation:pulseGlow 2.4s ease-in-out infinite alternate}
+@keyframes pulseGlow{from{transform:scale(1)}to{transform:scale(1.035)}}
+.eq-bars{display:flex;align-items:flex-end;gap:3px;height:18px}
+.eq-bar{width:3px;border-radius:2px;background:#fff;height:4px;transition:height .15s}
+
+/* ========== SPOTLIGHT ========== */
+#spotlight-backdrop{
+  position:fixed;inset:0;z-index:40000;display:none;align-items:flex-start;justify-content:center;
+  padding-top:17vh;background:rgba(0,0,0,.18);
+}
+#spotlight-backdrop.show{display:flex}
+#spotlight{
+  width:min(620px,calc(100vw - 28px));border-radius:16px;
+  background:var(--popover-bg);
+  backdrop-filter:blur(48px) saturate(200%);-webkit-backdrop-filter:blur(48px) saturate(200%);
+  border:1px solid var(--border-inner);
+  box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 0 .5px var(--border-outer);
+  overflow:hidden;animation:popIn .14s ease;
+}
+.spot-input-row{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--hairline)}
+.spot-input-row input{flex:1;border:0;background:transparent;outline:none;font-size:19px;font-weight:400}
+.spot-results{max-height:320px;overflow:auto;padding:8px}
+.spot-item{
+  display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:9px;cursor:pointer;
+}
+.spot-item.active,.spot-item:hover{background:var(--accent);color:#fff}
+.spot-item.active .spot-sub,.spot-item:hover .spot-sub{color:rgba(255,255,255,.8)}
+.spot-sub{font-size:11.5px;color:var(--text-2);margin-left:auto}
+
+/* ========== LAUNCHPAD ========== */
+#launchpad{
+  position:fixed;inset:0;z-index:35000;display:none;flex-direction:column;align-items:center;
+  padding:54px 24px 100px;background:rgba(12,14,22,.48);
+  backdrop-filter:blur(46px) saturate(160%);-webkit-backdrop-filter:blur(46px) saturate(160%);
+  animation:popIn .18s ease;overflow:auto;
+}
+#launchpad.show{display:flex}
+.lp-search{
+  width:240px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.12);color:#fff;padding:0 12px;text-align:center;outline:none;margin-bottom:36px;
+}
+.lp-search::placeholder{color:rgba(255,255,255,.65)}
+.lp-grid{
+  width:min(820px,100%);display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));
+  gap:28px 18px;justify-items:center;
+}
+.lp-app{
+  border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:8px;
+  cursor:pointer;color:#fff;transition:transform .15s;
+}
+.lp-app:hover{transform:scale(1.08)}
+.lp-app span{font-size:12.5px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+
+/* ========== LOCK SCREEN ========== */
+#lockscreen{
+  position:fixed;inset:0;z-index:60000;display:none;flex-direction:column;align-items:center;
+  justify-content:space-between;padding:70px 20px 56px;
+  background:rgba(10,14,24,.42);
+  backdrop-filter:blur(42px) saturate(165%);-webkit-backdrop-filter:blur(42px) saturate(165%);
+  color:#fff;
+}
+#lockscreen.show{display:flex}
+.lock-clock{text-align:center}
+.lock-date{font-size:20px;font-weight:500;opacity:.88;margin-bottom:4px}
+.lock-time{font-size:clamp(64px,11vw,96px);font-weight:700;letter-spacing:-2px;line-height:1;font-variant-numeric:tabular-nums}
+.lock-user{display:flex;flex-direction:column;align-items:center;gap:12px}
+.lock-avatar{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,#0a84ff,#bf5af2);
+  display:grid;place-items:center;font-size:28px;font-weight:700;
+  box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.4);
+}
+.lock-pass-wrap{display:flex;align-items:center;gap:6px}
+.lock-pass{
+  width:190px;height:32px;border-radius:99px;border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.18);color:#fff;padding:0 14px;outline:none;font-size:13px;
+}
+.lock-pass::placeholder{color:rgba(255,255,255,.65)}
+.lock-go{
+  width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.24);
+  color:#fff;display:grid;place-items:center;cursor:pointer;
+}
+.lock-go:hover{background:rgba(255,255,255,.36)}
+
+/* ========== TOAST ========== */
+#toast{
+  position:fixed;top:40px;left:50%;transform:translateX(-50%) translateY(-8px);z-index:70000;
+  padding:7px 14px;border-radius:99px;font-size:12.5px;font-weight:500;
+  background:var(--popover-bg);border:1px solid var(--border-inner);
+  box-shadow:0 12px 32px rgba(0,0,0,.35);backdrop-filter:blur(30px);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:720px){
+  .mb-hide-sm{display:none!important}
+  .unified-shell{grid-template-columns:1fr}
+  .unified-sidebar{display:none}
+  .window{left:6px!important;top:34px!important;width:calc(100vw - 12px)!important;height:calc(100vh - 110px)!important}
+  #dock{gap:4px;padding:5px 7px;height:56px;max-width:calc(100vw - 12px);overflow-x:auto}
+  .dock-item{width:42px;height:42px}
+}
+</style>
+</head>
+<body>
+
+<!-- Boot Screen -->
+<div id="boot">
+  <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+    <defs><linearGradient id="bootG" x1="0" y1="0" x2="64" y2="64"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#a5b4fc"/></linearGradient></defs>
+    <rect x="6" y="6" width="52" height="52" rx="14" stroke="url(#bootG)" stroke-width="3"/>
+    <path d="M22 22L42 42M42 22L22 42" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  </svg>
+  <div class="boot-bar"><div class="boot-fill" id="boot-fill"></div></div>
+  <button class="boot-skip" onclick="finishBoot()">点击跳过启动</button>
+</div>
+
+<div id="desktop">
+  <div id="wallpaper"></div>
+  <svg id="wallpaper-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"></svg>
+  <canvas id="wallpaper-canvas"></canvas>
+  <div id="selection-box"></div>
+
+  <!-- Menu Bar -->
+  <header id="menubar">
+    <div class="mb-left">
+      <button class="mb-item" id="mb-apple" onclick="toggleAppleMenu(event)" title="XXUUS 菜单">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <rect x="3" y="3" width="18" height="18" rx="5"/><path d="M8.5 8.5L15.5 15.5M15.5 8.5L8.5 15.5"/>
+        </svg>
+      </button>
+      <button class="mb-item mb-appname" id="mb-active-app" onclick="toggleAppDropdown(event)">访达</button>
+      <button class="mb-item mb-hide-sm" onclick="toggleFileDropdown(event)">文件</button>
+      <button class="mb-item mb-hide-sm" onclick="toggleWindowDropdown(event)">窗口</button>
+      <button class="mb-item mb-hide-sm" onclick="openApp('about')">帮助</button>
+    </div>
+    <div class="mb-right">
+      <button class="mb-item mb-icon-btn mb-hide-sm" title="Wi-Fi 已连接">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
+      </button>
+      <button class="mb-item mb-icon-btn" onclick="openSpotlight()" title="聚焦搜索 (Ctrl+K)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </button>
+      <button class="mb-item mb-icon-btn" id="mb-cc-btn" onclick="toggleControlCenter(event)" title="控制中心">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="18" height="7" rx="3.5"/><circle cx="16.5" cy="7.5" r="2" fill="currentColor"/><rect x="3" y="13" width="18" height="7" rx="3.5"/><circle cx="7.5" cy="16.5" r="2" fill="currentColor"/></svg>
+      </button>
+      <button class="mb-item mb-icon-btn mb-hide-sm" title="电池 100%">
+        <svg width="18" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="2" width="21" height="10" rx="2.5"/><rect x="3" y="4" width="17" height="6" rx="1" fill="currentColor" stroke="none"/><path d="M24 5v4" stroke-linecap="round"/></svg>
+      </button>
+      <button class="mb-item" id="mb-clock" onclick="toggleNotif(event)">--:--</button>
+    </div>
+  </header>
+
+  <!-- Desktop Icons -->
+  <div id="desktop-icons"></div>
+
+  <!-- Windows Container -->
+  <div id="windows"></div>
+
+  <!-- Dock -->
+  <div id="dock-container"><div id="dock"></div></div>
+
+  <!-- Dropdown Menus -->
+  <div id="mac-menu" class="mac-menu"></div>
+
+  <!-- Control Center -->
+  <div id="control-center">
+    <div class="cc-grid">
+      <div class="cc-card">
+        <div class="cc-row" onclick="toast('Wi-Fi: XXUUS-5G')">
+          <div class="cc-circle on"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><circle cx="12" cy="19" r="1.5" fill="currentColor"/></svg></div>
+          <div><div class="cc-label">Wi-Fi</div><div class="cc-sub">XXUUS-5G</div></div>
+        </div>
+        <div class="cc-row" onclick="toast('蓝牙已开启')">
+          <div class="cc-circle on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg></div>
+          <div><div class="cc-label">蓝牙</div><div class="cc-sub">已连接</div></div>
+        </div>
+        <div class="cc-row" onclick="toast('隔空投送：仅限访客')">
+          <div class="cc-circle on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <div><div class="cc-label">隔空投送</div><div class="cc-sub">所有人</div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="cc-tile-btn" onclick="toggleTheme()">
+          <div class="cc-circle on" id="cc-theme-icon">☾</div>
+          <div><div class="cc-label" id="cc-theme-label">深色模式</div><div class="cc-sub">点击切换</div></div>
+        </button>
+        <button class="cc-tile-btn" onclick="nextWallpaper()">
+          <div class="cc-circle" style="background:linear-gradient(135deg,#ff5f57,#bf5af2);color:#fff">✦</div>
+          <div><div class="cc-label">切换壁纸</div><div class="cc-sub" id="cc-wp-name">红杉极光</div></div>
+        </button>
+      </div>
+    </div>
+    <div class="cc-card">
+      <div class="cc-label" style="margin-bottom:2px">显示器亮度</div>
+      <div class="cc-slider-wrap">
+        <span style="font-size:13px;opacity:.7">☀</span>
+        <input type="range" class="cc-slider" min="55" max="105" value="100" oninput="document.getElementById('desktop').style.filter='brightness('+this.value+'%)'">
+      </div>
+    </div>
+    <div class="cc-card" style="flex-direction:row;align-items:center;justify-content:space-between">
+      <div><div class="cc-label" id="cc-music-title">星空 Lo-Fi</div><div class="cc-sub" id="cc-music-status">本地离线音频合成</div></div>
+      <button class="btn-mac btn-primary" onclick="toggleAmbientMusic()" id="cc-music-btn">播放</button>
+    </div>
+  </div>
+
+  <!-- Notification / Date Widget -->
+  <div id="notif-center">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong style="font-size:14px">今日概览</strong>
+      <span class="tag-pill">离线旗舰版 v2.0</span>
+    </div>
+    <div class="cc-card">
+      <div style="font-size:12px;color:var(--accent);font-weight:700" id="notif-weekday">星期日</div>
+      <div style="font-size:26px;font-weight:700" id="notif-day">15 日</div>
+      <div style="font-size:12px;color:var(--text-2)">XXUUS OS 运行在纯浏览器前端，无需服务器即可完整交互。</div>
+    </div>
+    <div class="cc-card">
+      <div style="font-size:12px;font-weight:600">快捷键提示</div>
+      <div style="font-size:11.5px;color:var(--text-2);line-height:1.6">
+        • <b>Ctrl / Cmd + K</b>：聚焦搜索 (Spotlight)<br>
+        • <b>双击桌面图标</b>：打开对应应用<br>
+        • <b>双击窗口标题栏</b>：最大化 / 还原
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Spotlight -->
+<div id="spotlight-backdrop" onclick="if(event.target===this)closeSpotlight()">
+  <div id="spotlight">
+    <div class="spot-input-row">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="opacity:.65"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="spot-input" placeholder="聚焦搜索：应用、文件、或输入算式如 128*64" oninput="renderSpotlight()" onkeydown="spotKey(event)" autocomplete="off">
+    </div>
+    <div class="spot-results" id="spot-results"></div>
+  </div>
+</div>
+
+<!-- Launchpad -->
+<div id="launchpad" onclick="if(event.target===this)toggleLaunchpad(false)">
+  <input class="lp-search" id="lp-search" placeholder="搜索应用" oninput="renderLaunchpad()" onclick="event.stopPropagation()">
+  <div class="lp-grid" id="lp-grid"></div>
+</div>
+
+<!-- Lock Screen -->
+<div id="lockscreen">
+  <div class="lock-clock">
+    <div class="lock-date" id="lock-date">11月15日 星期日</div>
+    <div class="lock-time" id="lock-time">11:20</div>
+  </div>
+  <div class="lock-user">
+    <div class="lock-avatar">X</div>
+    <div style="font-size:16px;font-weight:600">XXUUS</div>
+    <div class="lock-pass-wrap">
+      <input type="password" class="lock-pass" id="lock-input" placeholder="输入任意密码或直接回车" onkeydown="if(event.key==='Enter')unlockScreen()">
+      <button class="lock-go" onclick="unlockScreen()">→</button>
+    </div>
+    <div style="font-size:11.5px;opacity:.6">触控 ID 或按 Enter 解锁</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ===================== DATA & DEFINITIONS ===================== */
+const APPS = [
+  {id:'finder',    name:'访达',     title:'访达',       w:820, h:520, dock:true},
+  {id:'safari',    name:'Safari',   title:'Safari 浏览器', w:880, h:560, dock:true},
+  {id:'notes',     name:'备忘录',   title:'备忘录',     w:760, h:500, dock:true},
+  {id:'calendar',  name:'日历',     title:'日历',       w:780, h:540, dock:true},
+  {id:'photos',    name:'照片',     title:'照片',       w:780, h:520, dock:true},
+  {id:'music',     name:'音乐',     title:'XXUUS Music', w:640, h:460, dock:true},
+  {id:'portfolio', name:'作品集',   title:'个人作品集', w:820, h:540, dock:true},
+  {id:'lab',       name:'AI 实验室',title:'AI 实验室',  w:800, h:520, dock:true},
+  {id:'terminal',  name:'终端',     title:'终端 — zsh', w:680, h:430, dock:true},
+  {id:'calculator',name:'计算器',   title:'计算器',     w:300, h:450, dock:true, noResize:true},
+  {id:'settings',  name:'系统设置', title:'系统设置',   w:740, h:520, dock:true},
+  {id:'about',     name:'关于本机', title:'关于本机',   w:340, h:470, dock:false, noResize:true}
+];
+
+const WALLPAPERS = [
+  {name:'红杉极光', bg:'linear-gradient(155deg,#192347 0%,#3a245c 42%,#913a63 78%,#df7f57 100%)', lightBg:'linear-gradient(155deg,#335c9c 0%,#6e5494 45%,#d16b86 80%,#f2a86f 100%)', type:'mountains'},
+  {name:'索诺玛暮色', bg:'radial-gradient(circle at 18% 22%,#006d8f,transparent 48%),radial-gradient(circle at 82% 28%,#88326a,transparent 46%),radial-gradient(circle at 50% 82%,#153b6e,transparent 54%),#0f1526', lightBg:'radial-gradient(circle at 18% 22%,#4fb3d9,transparent 48%),radial-gradient(circle at 82% 28%,#e67ea3,transparent 46%),radial-gradient(circle at 50% 82%,#5d8ce0,transparent 54%),#d9e8f5', type:'silk'},
+  {name:'大瑟尔流体', bg:'linear-gradient(135deg,#0d1b3e 0%,#1f3e7a 35%,#73377a 70%,#c95149 100%)', lightBg:'linear-gradient(135deg,#4f89e8 0%,#73a7f5 35%,#d17cb8 70%,#f59b6e 100%)', type:'waves'},
+  {name:'深空星云', bg:'radial-gradient(ellipse at 30% 25%,rgba(52,120,246,.32),transparent 50%),radial-gradient(ellipse at 75% 70%,rgba(191,90,242,.28),transparent 50%),#070912', lightBg:'radial-gradient(ellipse at 30% 25%,rgba(52,120,246,.22),transparent 50%),radial-gradient(ellipse at 75% 70%,rgba(191,90,242,.22),transparent 50%),#162238', type:'stars'}
+];
+
+const VFS = {
+  desktop: [
+    {name:'我的作品集', kind:'app', target:'portfolio', size:'--'},
+    {name:'AI 实验室', kind:'app', target:'lab', size:'--'},
+    {name:'README.md', kind:'file', size:'4 KB', content:'欢迎使用 XXUUS OS 2.0 (Web Sequoia Edition)！\n\n这是一个 100% 离线可运行的纯前端仿真桌面系统：\n• 无需服务器：直接托管于 GitHub Pages 或本地打开\n• 矢量重绘图标：彻底告别粗糙 Emoji\n• 真实交互细节：Dock 高斯波浪放大、聚焦搜索、控制中心、WebAudio 合成音乐、可读写备忘录。\n\n未来如需多人光标同步或跨设备账号，再按需接入 Supabase Realtime / Cloudflare Workers 即可。'},
+    {name:'关于 XXUUS', kind:'app', target:'about', size:'--'}
+  ],
+  documents: [
+    {name:'XXUUS_架构规划.txt', kind:'file', size:'7 KB', content:'阶段一：纯静态离线旗舰桌面体验（当前阶段）\n阶段二：补充真实作品链接、截图与 3D 展示模型\n阶段三：接入 Supabase Realtime 实现轻量级访客在线人数与互动气泡'},
+    {name:'个人简历_2026.pdf', kind:'file', size:'1.2 MB', content:'[本地预览示例]\n姓名：XXUUS\n方向：数字空间 / Three.js / BIM 三维可视化 / 生成式 AI 工作流\n站点：https://xxuus.com'},
+    {name:'Prompt_灵感库.md', kind:'file', size:'12 KB', content:'# 高频 Prompt 模板\n1. 建筑光影质感渲染提示词\n2. Three.js 着色器星空参数\n3. 极简苹果风网页排版约束'}
+  ],
+  portfolio: [
+    {name:'数字地球实验室', kind:'app', target:'portfolio', size:'WebGL'},
+    {name:'BIM 工程建模', kind:'app', target:'portfolio', size:'3D'},
+    {name:'AI 创意实验', kind:'app', target:'lab', size:'AI'}
+  ],
+  downloads: [
+    {name:'xxuus-os-v2.html', kind:'file', size:'单文件离线版', content:'这就是你正在运行的 XXUUS OS v2.0 离线旗舰原型！'}
+  ],
+  trash: [
+    {name:'旧版粗糙原型_v1.html', kind:'file', size:'31 KB', content:'已淘汰的初版 Emoji 风格原型，被优雅的 macOS 2.0 取代。'}
+  ]
+};
+
+const STATE = {
+  zIndex: 40,
+  activeApp: 'finder',
+  theme: localStorage.getItem('xxuus-theme') || 'dark',
+  accent: localStorage.getItem('xxuus-accent') || 'blue',
+  wallpaper: Number(localStorage.getItem('xxuus-wp') || 0),
+  dockMag: localStorage.getItem('xxuus-mag') !== 'false',
+  showDeskIcons: localStorage.getItem('xxuus-desk') !== 'false',
+  windows: {},
+  winOffset: 0,
+  finderFolder: 'desktop',
+  finderView: 'grid',
+  safariTabs: [
+    {title:'XXUUS 个人空间', url:'https://xxuus.com'},
+    {title:'GitHub Pages', url:'https://github.com'}
+  ],
+  safariActiveTab: 0,
+  notes: JSON.parse(localStorage.getItem('xxuus-notes-v2') || 'null') || [
+    {id:'n1', title:'XXUUS OS 2.0 视觉重塑要点', date:'今天 11:20', body:'1. 全面替换为苹果 Squircle 超椭圆矢量图标\n2. 一体化半透明侧边栏（Vibrancy）\n3. Dock 高斯波浪放大与实时提示标签\n4. 控制中心、Spotlight 聚焦搜索、真实7列日历与物理按键计算器\n5. 100% 离线即可运行，内置 WebAudio 氛围音轨'},
+    {id:'n2', title:'上线 xxuus.com/os/ 检查清单', date:'昨天', body:'- 确认静态 HTML 无需任何外部 CDN\n- 放入 GitHub Pages 仓库的 /os/index.html\n- 测试桌面端与手机端响应布局'}
+  ],
+  activeNoteId: 'n1',
+  calYear: new Date().getFullYear(),
+  calMonth: new Date().getMonth(),
+  musicPlaying: false,
+  musicTrack: 0
+};
+
+/* ===================== MACOS SQUIRCLE SVG ICONS ===================== */
+let _iconUid = 0;
+function getAppIconSVG(id, size=48){
+  const u = ++_iconUid;
+  const now = new Date();
+  const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
+  const icons = {
+    finder: `
+      <defs>
+        <linearGradient id="fL-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#58b8ff"/><stop offset="100%" stop-color="#146ef5"/></linearGradient>
+        <linearGradient id="fR-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f8fbff"/><stop offset="100%" stop-color="#dce6f7"/></linearGradient>
+      </defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#fR-${u})"/>
+      <path d="M17 3H34C30 19 29 29 34 38H24L27 61H17C9.3 61 3 54.7 3 47V17C3 9.3 9.3 3 17 3Z" fill="url(#fL-${u})"/>
+      <path d="M34 3C30 19 29 29 34 38H24L27 61" fill="none" stroke="#1b4d9e" stroke-opacity=".22" stroke-width="1.5"/>
+      <line x1="20" y1="20" x2="20" y2="27" stroke="#182a4a" stroke-width="3.2" stroke-linecap="round"/>
+      <line x1="44" y1="20" x2="44" y2="27" stroke="#182a4a" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M19 42C24.5 48.5 39.5 48.5 45 42" fill="none" stroke="#182a4a" stroke-width="3.2" stroke-linecap="round"/>`,
+    safari: `
+      <defs>
+        <linearGradient id="sfB-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e5e9f0"/></linearGradient>
+        <radialGradient id="sfD-${u}" cx="50%" cy="35%" r="65%"><stop offset="0%" stop-color="#5bc8ff"/><stop offset="100%" stop-color="#0b66e4"/></radialGradient>
+      </defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#sfB-${u})"/>
+      <circle cx="32" cy="32" r="22.5" fill="url(#sfD-${u})"/>
+      <circle cx="32" cy="32" r="20" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1" stroke-dasharray="2 3.2"/>
+      <polygon points="32,32 43,19 36,36" fill="#ff3b30"/>
+      <polygon points="32,32 21,45 28,28" fill="#ffffff"/>
+      <circle cx="32" cy="32" r="2.2" fill="#e5e9f0"/>`,
+    notes: `
+      <defs><linearGradient id="ntY-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffd60a"/><stop offset="100%" stop-color="#f5a600"/></linearGradient></defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="#ffffff"/>
+      <path d="M3 17C3 9.3 9.3 3 17 3H47C54.7 3 61 9.3 61 17V20H3V17Z" fill="url(#ntY-${u})"/>
+      <line x1="3" y1="22.5" x2="61" y2="22.5" stroke="#d1d5db" stroke-width="1" stroke-dasharray="2 2"/>
+      <line x1="11" y1="31" x2="53" y2="31" stroke="#e5e7eb" stroke-width="1.5"/>
+      <line x1="11" y1="40" x2="53" y2="40" stroke="#e5e7eb" stroke-width="1.5"/>
+      <line x1="11" y1="49" x2="42" y2="49" stroke="#e5e7eb" stroke-width="1.5"/>`,
+    calendar: `
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="#ffffff"/>
+      <path d="M3 17C3 9.3 9.3 3 17 3H47C54.7 3 61 9.3 61 17V21H3V17Z" fill="#ff3b30"/>
+      <text x="32" y="15.5" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="700" font-family="-apple-system,sans-serif">${weekdays[now.getDay()]}</text>
+      <text x="32" y="49" text-anchor="middle" fill="#1d1d1f" font-size="27" font-weight="600" font-family="-apple-system,sans-serif">${now.getDate()}</text>`,
+    photos: `
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="#ffffff"/>
+      <g transform="translate(32 32)">
+        <ellipse rx="5.5" ry="12" transform="translate(0 -11)" fill="#ff3b30" opacity=".85"/>
+        <ellipse rx="5.5" ry="12" transform="rotate(45) translate(0 -11)" fill="#ff9500" opacity=".85"/>
+        <ellipse rx="5.5" ry="12" transform="rotate(90) translate(0 -11)" fill="#ffcc00" opacity=".85"/>
+        <ellipse rx="5.5" ry="12" transform="rotate(135) translate(0 -11)" fill="#34c759" opacity=".85"/>
+        <ellipse rx="5.5" ry="12" transform="rotate(180) translate(0 -11)" fill="#30b0c7" opacity=".85"/>
+        <ellipse rx="5.5" ry="12" transform="rotate(225) translate(0 -11)" fill="#007aff" opacity=".85"/>
+        <ellipse rx="5.5" ry="12" transform="rotate(270) translate(0 -11)" fill="#5856d6" opacity=".85"/>
+        <ellipse rx="5.5" ry="12" transform="rotate(315) translate(0 -11)" fill="#af52de" opacity=".85"/>
+      </g>`,
+    music: `
+      <defs><linearGradient id="mu-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff5e7e"/><stop offset="100%" stop-color="#fa233b"/></linearGradient></defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#mu-${u})"/>
+      <path d="M25 42V20L46 15.5V37.5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="21" cy="43.5" r="5.5" fill="#fff"/>
+      <circle cx="42" cy="39" r="5.5" fill="#fff"/>`,
+    terminal: `
+      <defs><linearGradient id="tm-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#484a52"/><stop offset="100%" stop-color="#22242a"/></linearGradient></defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#tm-${u})"/>
+      <rect x="7.5" y="7.5" width="49" height="49" rx="10" fill="#111318"/>
+      <path d="M16 21L25 27.5L16 34" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="28" y1="34" x2="39" y2="34" stroke="#30d158" stroke-width="3.2" stroke-linecap="round"/>`,
+    calculator: `
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="#2c2c2e"/>
+      <rect x="10" y="10" width="44" height="12" rx="3" fill="#1c1c1e"/>
+      <circle cx="15" cy="30" r="4" fill="#636366"/><circle cx="26" cy="30" r="4" fill="#636366"/><circle cx="37" cy="30" r="4" fill="#636366"/><circle cx="49" cy="30" r="4" fill="#ff9f0a"/>
+      <circle cx="15" cy="40" r="4" fill="#636366"/><circle cx="26" cy="40" r="4" fill="#636366"/><circle cx="37" cy="40" r="4" fill="#636366"/><circle cx="49" cy="40" r="4" fill="#ff9f0a"/>
+      <rect x="11" y="46" width="19" height="8" rx="4" fill="#636366"/><circle cx="37" cy="50" r="4" fill="#636366"/><circle cx="49" cy="50" r="4" fill="#ff9f0a"/>`,
+    portfolio: `
+      <defs><linearGradient id="pf-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4facfe"/><stop offset="100%" stop-color="#3a47d5"/></linearGradient></defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#pf-${u})"/>
+      <polygon points="32,14 48,23 48,41 32,50 16,41 16,23" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M16 23L32 32L48 23M32 32V50" stroke="#fff" stroke-opacity=".85" stroke-width="2.4"/>`,
+    lab: `
+      <defs><linearGradient id="lb-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#4f46e5"/></linearGradient></defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#lb-${u})"/>
+      <path d="M32 14L35.5 26.5L48 30L35.5 33.5L32 46L28.5 33.5L16 30L28.5 26.5Z" fill="#fff"/>
+      <circle cx="46" cy="18" r="2.5" fill="#fff" opacity=".8"/><circle cx="19" cy="44" r="2" fill="#fff" opacity=".7"/>`,
+    settings: `
+      <defs><linearGradient id="st-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d4d7dd"/><stop offset="100%" stop-color="#8e949e"/></linearGradient></defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#st-${u})"/>
+      <circle cx="32" cy="32" r="16" fill="#484b52"/>
+      <circle cx="32" cy="32" r="11" fill="none" stroke="#c7cbd4" stroke-width="4.5" stroke-dasharray="4.5 3"/>
+      <circle cx="32" cy="32" r="5" fill="#2c2f36"/>`,
+    about: `
+      <defs><linearGradient id="ab-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient></defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#ab-${u})"/>
+      <rect x="14" y="16" width="36" height="24" rx="3.5" fill="#38bdf8" fill-opacity=".2" stroke="#e2e8f0" stroke-width="2.2"/>
+      <path d="M11 44H53" stroke="#e2e8f0" stroke-width="2.6" stroke-linecap="round"/>`,
+    launchpad: `
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="#f3f4f6"/>
+      <rect x="12" y="12" width="11" height="11" rx="3" fill="#ff3b30"/><rect x="26.5" y="12" width="11" height="11" rx="3" fill="#ff9500"/><rect x="41" y="12" width="11" height="11" rx="3" fill="#ffcc00"/>
+      <rect x="12" y="26.5" width="11" height="11" rx="3" fill="#34c759"/><rect x="26.5" y="26.5" width="11" height="11" rx="3" fill="#30b0c7"/><rect x="41" y="26.5" width="11" height="11" rx="3" fill="#007aff"/>
+      <rect x="12" y="41" width="11" height="11" rx="3" fill="#5856d6"/><rect x="26.5" y="41" width="11" height="11" rx="3" fill="#af52de"/><rect x="41" y="41" width="11" height="11" rx="3" fill="#ff2d55"/>`,
+    trash: `
+      <defs><linearGradient id="tr-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f1f5f9"/><stop offset="100%" stop-color="#94a3b8"/></linearGradient></defs>
+      <rect x="14" y="14" width="36" height="40" rx="5" fill="url(#tr-${u})" fill-opacity=".85" stroke="#fff" stroke-opacity=".5"/>
+      <rect x="12" y="11" width="40" height="5" rx="2.5" fill="#e2e8f0"/>
+      <line x1="24" y1="22" x2="25" y2="47" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
+      <line x1="32" y1="22" x2="32" y2="47" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
+      <line x1="40" y1="22" x2="39" y2="47" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>`,
+    file: `
+      <path d="M14 8H38L50 20V54C50 56.2 48.2 58 46 58H14C11.8 58 10 56.2 10 54V12C10 9.8 11.8 8 14 8Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+      <path d="M38 8V20H50" fill="#e2e8f0"/>
+      <line x1="17" y1="29" x2="43" y2="29" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+      <line x1="17" y1="37" x2="43" y2="37" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+      <line x1="17" y1="45" x2="33" y2="45" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>`
+  };
+  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">${icons[id]||icons.file}<rect x="3.5" y="3.5" width="57" height="57" rx="13.5" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1"/></svg>`;
+}
+
+/* ===================== BOOT & CLOCK ===================== */
+function finishBoot(){document.getElementById('boot').classList.add('done')}
+window.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{document.getElementById('boot-fill').style.width='100%'},60);
+  setTimeout(finishBoot,1150);
+});
+
+function updateClocks(){
+  const d = new Date();
+  const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
+  const fullWeek = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mm = String(d.getMinutes()).padStart(2,'0');
+  document.getElementById('mb-clock').textContent = `${d.getMonth()+1}月${d.getDate()}日 ${weekdays[d.getDay()]} ${hh}:${mm}`;
+  document.getElementById('lock-time').textContent = `${hh}:${mm}`;
+  document.getElementById('lock-date').textContent = `${d.getMonth()+1}月${d.getDate()}日 ${fullWeek[d.getDay()]}`;
+  document.getElementById('notif-weekday').textContent = fullWeek[d.getDay()];
+  document.getElementById('notif-day').textContent = `${d.getDate()} 日`;
+}
+setInterval(updateClocks,1000); updateClocks();
+
+/* ===================== WALLPAPER & THEME ===================== */
+function applyThemeAndWallpaper(){
+  document.documentElement.setAttribute('data-theme', STATE.theme);
+  document.documentElement.setAttribute('data-accent', STATE.accent);
+  const wp = WALLPAPERS[STATE.wallpaper] || WALLPAPERS[0];
+  document.getElementById('wallpaper').style.background = STATE.theme==='light' ? wp.lightBg : wp.bg;
+  document.getElementById('cc-theme-label').textContent = STATE.theme==='dark'?'深色模式':'浅色模式';
+  document.getElementById('cc-theme-icon').textContent = STATE.theme==='dark'?'☾':'☀';
+  document.getElementById('cc-wp-name').textContent = wp.name;
+  renderWallpaperArt(wp.type);
+}
+
+function renderWallpaperArt(type){
+  const svg = document.getElementById('wallpaper-svg');
+  const canvas = document.getElementById('wallpaper-canvas');
+  svg.innerHTML = '';
+  if(type==='mountains'){
+    svg.innerHTML = `
+      <defs>
+        <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f29c6b" stop-opacity=".35"/><stop offset="100%" stop-color="#2c1d4d" stop-opacity=".55"/></linearGradient>
+        <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#603670" stop-opacity=".6"/><stop offset="100%" stop-color="#13162b" stop-opacity=".85"/></linearGradient>
+      </defs>
+      <circle cx="1050" cy="240" r="190" fill="#ffb88c" opacity=".18" style="filter:blur(36px)"/>
+      <path d="M0 540 C260 440 460 560 760 460 C1020 375 1240 490 1440 430 L1440 900 L0 900Z" fill="url(#m1)"/>
+      <path d="M0 640 C280 560 540 670 860 580 C1120 510 1300 620 1440 570 L1440 900 L0 900Z" fill="url(#m2)"/>
+      <path d="M0 760 C340 700 640 800 980 710 C1200 650 1340 730 1440 710 L1440 900 L0 900Z" fill="rgba(10,14,26,.45)"/>`;
+  } else if(type==='waves'){
+    svg.innerHTML = `
+      <path d="M-50 700 C320 500 500 220 920 260 C1220 290 1320 140 1500 80 L1500 920 L-50 920Z" fill="rgba(255,255,255,.08)"/>
+      <path d="M-50 820 C360 660 660 410 1040 450 C1290 480 1400 320 1500 280 L1500 920 L-50 920Z" fill="rgba(255,140,120,.14)"/>`;
+  } else if(type==='silk'){
+    svg.innerHTML = `
+      <ellipse cx="420" cy="480" rx="520" ry="260" transform="rotate(-18 420 480)" fill="rgba(255,255,255,.06)"/>
+      <ellipse cx="1020" cy="360" rx="460" ry="220" transform="rotate(24 1020 360)" fill="rgba(255,180,210,.09)"/>`;
+  }
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(type==='stars'){
+    for(let i=0;i<160;i++){
+      ctx.fillStyle = `rgba(255,255,255,${(Math.random()*0.65+0.2).toFixed(2)})`;
+      ctx.beginPath();
+      ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*1.4+0.3, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+}
+window.addEventListener('resize',()=>renderWallpaperArt(WALLPAPERS[STATE.wallpaper].type));
+
+function setTheme(t){STATE.theme=t;localStorage.setItem('xxuus-theme',t);applyThemeAndWallpaper()}
+function toggleTheme(){setTheme(STATE.theme==='dark'?'light':'dark')}
+function setAccent(a){STATE.accent=a;localStorage.setItem('xxuus-accent',a);applyThemeAndWallpaper()}
+function setWallpaper(i){STATE.wallpaper=i;localStorage.setItem('xxuus-wp',i);applyThemeAndWallpaper();toast('已切换壁纸：'+WALLPAPERS[i].name)}
+function nextWallpaper(){setWallpaper((STATE.wallpaper+1)%WALLPAPERS.length)}
+
+/* ===================== DESKTOP ICONS & SELECTION ===================== */
+const DESKTOP_ITEMS = [
+  {id:'di-finder', name:'Macintosh HD', icon:'finder', x:null, y:20, action:()=>openApp('finder')},
+  {id:'di-port',   name:'个人作品集', icon:'portfolio', x:null, y:125, action:()=>openApp('portfolio')},
+  {id:'di-lab',    name:'AI 实验室', icon:'lab', x:null, y:230, action:()=>openApp('lab')},
+  {id:'di-readme', name:'README.md', icon:'file', x:null, y:335, action:()=>openFilePreview('README.md', VFS.desktop[2].content)}
+];
+
+function buildDesktopIcons(){
+  const host = document.getElementById('desktop-icons');
+  host.innerHTML = '';
+  host.style.display = STATE.showDeskIcons ? 'block' : 'none';
+  DESKTOP_ITEMS.forEach((item,idx)=>{
+    const el = document.createElement('button');
+    el.className = 'desk-item';
+    el.style.right = '18px';
+    el.style.top = (14 + idx*104) + 'px';
+    el.innerHTML = `<div class="icon-box">${getAppIconSVG(item.icon, 48)}</div><span class="desk-label">${item.name}</span>`;
+    el.addEventListener('click', e=>{
+      e.stopPropagation();
+      document.querySelectorAll('.desk-item').forEach(d=>d.classList.remove('selected'));
+      el.classList.add('selected');
+      if(window.innerWidth <= 720) item.action();
+    });
+    el.addEventListener('dblclick', e=>{e.stopPropagation();item.action()});
+    host.appendChild(el);
+  });
+}
+
+// Desktop rubber-band selection
+(function initDesktopSelect(){
+  const desktop = document.getElementById('desktop');
+  const box = document.getElementById('selection-box');
+  let dragging = false, sx=0, sy=0;
+  desktop.addEventListener('mousedown', e=>{
+    if(e.button!==0 || e.target.closest('.window,.desk-item,#dock,#menubar,.mac-menu,#control-center,#notif-center')) return;
+    document.querySelectorAll('.desk-item').forEach(d=>d.classList.remove('selected'));
+    dragging = true; sx = e.clientX; sy = e.clientY;
+    box.style.left = sx+'px'; box.style.top = sy+'px'; box.style.width='0px'; box.style.height='0px';
+    box.style.display = 'block';
+  });
+  window.addEventListener('mousemove', e=>{
+    if(!dragging) return;
+    const x = Math.min(sx,e.clientX), y = Math.min(sy,e.clientY);
+    const w = Math.abs(e.clientX-sx), h = Math.abs(e.clientY-sy);
+    box.style.left=x+'px'; box.style.top=y+'px'; box.style.width=w+'px'; box.style.height=h+'px';
+    const br = box.getBoundingClientRect();
+    document.querySelectorAll('.desk-item').forEach(di=>{
+      const r = di.getBoundingClientRect();
+      const hit = !(r.right<br.left || r.left>br.right || r.bottom<br.top || r.top>br.bottom);
+      di.classList.toggle('selected', hit);
+    });
+  });
+  window.addEventListener('mouseup', ()=>{if(dragging){dragging=false;box.style.display='none'}});
+})();
+
+/* ===================== DOCK + GAUSSIAN MAGNIFICATION ===================== */
+function buildDock(){
+  const dock = document.getElementById('dock');
+  dock.innerHTML = '';
+  const dockApps = APPS.filter(a=>a.dock);
+  dockApps.forEach(app=>{
+    const b = document.createElement('button');
+    b.className = 'dock-item';
+    b.dataset.app = app.id;
+    b.innerHTML = `${getAppIconSVG(app.id, 48)}<span class="dock-tip">${app.name}</span>`;
+    b.onclick = ()=>{
+      b.classList.remove('dock-bounce'); void b.offsetWidth;
+      if(!STATE.windows[app.id]) b.classList.add('dock-bounce');
+      openApp(app.id);
+    };
+    dock.appendChild(b);
+  });
+
+  const sep = document.createElement('div'); sep.className='dock-sep'; dock.appendChild(sep);
+
+  const lp = document.createElement('button');
+  lp.className='dock-item';
+  lp.innerHTML = `${getAppIconSVG('launchpad', 48)}<span class="dock-tip">启动台</span>`;
+  lp.onclick = ()=>toggleLaunchpad();
+  dock.appendChild(lp);
+
+  const tr = document.createElement('button');
+  tr.className='dock-item';
+  tr.innerHTML = `${getAppIconSVG('trash', 48)}<span class="dock-tip">废纸篓</span>`;
+  tr.onclick = ()=>{STATE.finderFolder='trash';openApp('finder');renderFinder()};
+  dock.appendChild(tr);
+
+  // Magnification physics
+  dock.addEventListener('mousemove', e=>{
+    if(!STATE.dockMag || window.innerWidth <= 720) return;
+    const items = dock.querySelectorAll('.dock-item');
+    items.forEach(item=>{
+      item.classList.add('dragging-dock');
+      const rect = item.getBoundingClientRect();
+      const center = rect.left + rect.width/2;
+      const dist = Math.abs(e.clientX - center);
+      const scale = 1 + 0.48 * Math.exp(-(dist*dist)/(2*62*62));
+      const size = 50 * scale;
+      item.style.width = size + 'px';
+      item.style.height = size + 'px';
+      item.style.transform = `translateY(${-(scale-1)*12}px)`;
+    });
+  });
+  dock.addEventListener('mouseleave', ()=>{
+    dock.querySelectorAll('.dock-item').forEach(item=>{
+      item.classList.remove('dragging-dock');
+      item.style.width = ''; item.style.height = ''; item.style.transform = '';
+    });
+  });
+}
+
+function updateDockDots(){
+  document.querySelectorAll('.dock-item[data-app]').forEach(btn=>{
+    btn.classList.toggle('running', !!STATE.windows[btn.dataset.app]);
+  });
+}
+
+/* ===================== WINDOW MANAGER ===================== */
+function trafficHTML(id){
+  return `<div class="traffic">
+    <button class="tl-btn tl-close" onclick="closeWin('${id}',event)" title="关闭">
+      <svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 3L9 9M9 3L3 9"/></svg>
+    </button>
+    <button class="tl-btn tl-min" onclick="minWin('${id}',event)" title="最小化">
+      <svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 6H9.5"/></svg>
+    </button>
+    <button class="tl-btn tl-zoom" onclick="zoomWin('${id}',event)" title="缩放">
+      <svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 3H7L3 7ZM9 9H5L9 5Z"/></svg>
+    </button>
+  </div>`;
+}
+
+function openApp(id){
+  toggleLaunchpad(false);
+  closeAllMenus();
+  const app = APPS.find(a=>a.id===id);
+  if(!app) return;
+
+  if(STATE.windows[id]){
+    const w = STATE.windows[id];
+    w.classList.remove('minimized');
+    focusWin(id);
+    return;
+  }
+
+  const win = document.createElement('section');
+  win.className = 'window';
+  win.id = 'win-' + id;
+  const maxW = Math.min(app.w, window.innerWidth - 24);
+  const maxH = Math.min(app.h, window.innerHeight - 116);
+  const offset = (STATE.winOffset % 5) * 24;
+  STATE.winOffset++;
+  const left = Math.max(12, Math.round((window.innerWidth - maxW)/2 + offset - 40));
+  const top = Math.max(36, Math.round((window.innerHeight - maxH)/2 - 20 + offset - 20));
+  win.style.width = maxW + 'px';
+  win.style.height = maxH + 'px';
+  win.style.left = left + 'px';
+  win.style.top = top + 'px';
+
+  const unifiedApps = ['finder','notes','settings'];
+  if(unifiedApps.includes(id)){
+    win.innerHTML = `<div class="win-body">${renderAppContent(id)}</div>`;
+  } else {
+    win.innerHTML = `
+      <div class="titlebar" data-drag-handle>
+        ${trafficHTML(id)}
+        <div class="titlebar-title">${app.title}</div>
+      </div>
+      <div class="win-body">${renderAppContent(id)}</div>`;
+  }
+
+  if(!app.noResize){
+    win.innerHTML += `<div class="resizer resizer-r"></div><div class="resizer resizer-b"></div><div class="resizer resizer-br"></div>`;
+  }
+
+  document.getElementById('windows').appendChild(win);
+  STATE.windows[id] = win;
+  wireWindowPhysics(win, id, app.noResize);
+  initAppRuntime(id, win);
+  focusWin(id);
+  updateDockDots();
+}
+
+function focusWin(id){
+  Object.entries(STATE.windows).forEach(([k,w])=>w.classList.toggle('active-win', k===id));
+  const w = STATE.windows[id];
+  if(w){
+    w.style.zIndex = ++STATE.zIndex;
+    STATE.activeApp = id;
+    const app = APPS.find(a=>a.id===id);
+    document.getElementById('mb-active-app').textContent = app ? app.name : '访达';
+  }
+}
+
+function closeWin(id, e){
+  if(e) e.stopPropagation();
+  const w = STATE.windows[id];
+  if(!w) return;
+  w.remove();
+  delete STATE.windows[id];
+  updateDockDots();
+  const remaining = Object.keys(STATE.windows);
+  if(remaining.length){
+    const topId = remaining.sort((a,b)=>Number(STATE.windows[b].style.zIndex)-Number(STATE.windows[a].style.zIndex))[0];
+    focusWin(topId);
+  } else {
+    document.getElementById('mb-active-app').textContent = '访达';
+  }
+}
+
+function minWin(id, e){
+  if(e) e.stopPropagation();
+  const w = STATE.windows[id];
+  if(w) w.classList.add('minimized');
+}
+
+function zoomWin(id, e){
+  if(e) e.stopPropagation();
+  const w = STATE.windows[id];
+  if(w && !APPS.find(a=>a.id===id)?.noResize) w.classList.toggle('maximized');
+}
+
+function wireWindowPhysics(win, id, noResize){
+  win.addEventListener('mousedown', ()=>focusWin(id));
+  win.querySelectorAll('[data-drag-handle]').forEach(bar=>{
+    let dragging=false, sx=0, sy=0, sl=0, st=0;
+    bar.addEventListener('pointerdown', e=>{
+      if(e.target.closest('button,input,select,.traffic') || win.classList.contains('maximized')) return;
+      dragging=true; sx=e.clientX; sy=e.clientY;
+      const r = win.getBoundingClientRect(); sl=r.left; st=r.top;
+      bar.setPointerCapture(e.pointerId);
+    });
+    bar.addEventListener('pointermove', e=>{
+      if(!dragging) return;
+      win.style.left = Math.max(-win.offsetWidth+120, Math.min(window.innerWidth-120, sl+e.clientX-sx)) + 'px';
+      win.style.top = Math.max(28, Math.min(window.innerHeight-70, st+e.clientY-sy)) + 'px';
+    });
+    bar.addEventListener('pointerup', ()=>dragging=false);
+    bar.addEventListener('dblclick', e=>{
+      if(!e.target.closest('button,input')) zoomWin(id);
+    });
+  });
+
+  if(noResize) return;
+  ['r','b','br'].forEach(dir=>{
+    const h = win.querySelector('.resizer-'+dir);
+    if(!h) return;
+    let rs=false, sw=0, sh=0, rx=0, ry=0;
+    h.addEventListener('pointerdown', e=>{
+      if(win.classList.contains('maximized')) return;
+      rs=true; sw=win.offsetWidth; sh=win.offsetHeight; rx=e.clientX; ry=e.clientY;
+      h.setPointerCapture(e.pointerId); e.stopPropagation();
+    });
+    h.addEventListener('pointermove', e=>{
+      if(!rs) return;
+      if(dir==='r'||dir==='br') win.style.width = Math.max(320, sw+e.clientX-rx)+'px';
+      if(dir==='b'||dir==='br') win.style.height = Math.max(220, sh+e.clientY-ry)+'px';
+    });
+    h.addEventListener('pointerup', ()=>rs=false);
+  });
+}
+
+/* ===================== APP CONTENTS & RUNTIMES ===================== */
+function renderAppContent(id){
+  if(id==='finder'){
+    return `<div class="unified-shell">
+      <aside class="unified-sidebar">
+        <div class="sidebar-top" data-drag-handle>${trafficHTML('finder')}</div>
+        <div class="sidebar-scroll">
+          <div class="side-group-title">个人收藏</div>
+          <button class="side-item" data-folder="desktop" onclick="switchFinder('desktop')">🖥️ 桌面</button>
+          <button class="side-item" data-folder="documents" onclick="switchFinder('documents')">📄 文稿</button>
+          <button class="side-item" data-folder="portfolio" onclick="switchFinder('portfolio')">🗂️ 作品集</button>
+          <button class="side-item" data-folder="downloads" onclick="switchFinder('downloads')">⬇️ 下载</button>
+          <div class="side-group-title">位置</div>
+          <button class="side-item" data-folder="trash" onclick="switchFinder('trash')">🗑️ 废纸篓</button>
+          <div class="side-group-title">标签</div>
+          <button class="side-item" onclick="toast('已筛选：重点项目')"><span class="side-dot" style="background:#ff3b30"></span>重要</button>
+          <button class="side-item" onclick="toast('已筛选：AI 创意')"><span class="side-dot" style="background:#af52de"></span>AI 实验</button>
+        </div>
+      </aside>
+      <div class="unified-main">
+        <div class="unified-toolbar" data-drag-handle>
+          <strong style="font-size:14px;margin-right:auto" id="finder-title">桌面</strong>
+          <button class="btn-icon active" id="fv-grid" onclick="setFinderView('grid')" title="图标视图">⊞</button>
+          <button class="btn-icon" id="fv-list" onclick="setFinderView('list')" title="列表视图">☰</button>
+          <input class="mac-input" id="finder-search" placeholder="搜索当前文件夹" style="width:165px;height:27px;font-size:12px" oninput="renderFinder()">
+        </div>
+        <div id="finder-body" style="flex:1;display:flex;flex-direction:column;min-height:0"></div>
+        <div class="finder-status"><span id="finder-count">0 个项目</span><span>Macintosh HD › 用户 › XXUUS</span></div>
+      </div>
+    </div>`;
+  }
+
+  if(id==='safari'){
+    return `<div style="display:flex;flex-direction:column;height:100%">
+      <div class="safari-top">
+        <button class="btn-icon" onclick="toast('后退')">‹</button>
+        <button class="btn-icon" onclick="toast('前进')">›</button>
+        <div class="safari-url">
+          <span style="font-size:11px;opacity:.6">🔒</span>
+          <input id="safari-url-input" value="https://xxuus.com" onkeydown="if(event.key==='Enter')safariGo()">
+        </div>
+        <button class="btn-mac" onclick="safariNewTab()">＋</button>
+      </div>
+      <div class="safari-tabs" id="safari-tabs"></div>
+      <div id="safari-view" class="scroll-pane" style="background:var(--win-body)"></div>
+    </div>`;
+  }
+
+  if(id==='notes'){
+    return `<div class="unified-shell">
+      <aside class="unified-sidebar">
+        <div class="sidebar-top" data-drag-handle style="justify-content:space-between">
+          ${trafficHTML('notes')}
+          <button class="btn-icon" onclick="createNote()" title="新建备忘录">✎</button>
+        </div>
+        <div class="sidebar-scroll" id="notes-list" style="padding:6px 8px"></div>
+      </aside>
+      <div class="unified-main">
+        <div class="unified-toolbar" data-drag-handle style="justify-content:space-between">
+          <span style="font-size:12px;color:var(--text-3)" id="note-date-bar">今天</span>
+          <div style="display:flex;gap:6px">
+            <button class="btn-mac" onclick="deleteActiveNote()" style="color:#ff453a">删除</button>
+          </div>
+        </div>
+        <input id="note-title-input" style="border:0;background:transparent;outline:none;padding:18px 26px 4px;font-size:22px;font-weight:700" oninput="saveActiveNote()">
+        <textarea id="note-body-input" class="notes-editor" placeholder="开始记录你的想法……" oninput="saveActiveNote()"></textarea>
+      </div>
+    </div>`;
+  }
+
+  if(id==='calendar'){
+    return `<div style="display:flex;flex-direction:column;height:100%">
+      <div class="cal-header">
+        <div style="font-size:20px;font-weight:700" id="cal-title">2026年11月</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn-mac" onclick="shiftCal(-1)">‹</button>
+          <button class="btn-mac" onclick="resetCal()">今天</button>
+          <button class="btn-mac" onclick="shiftCal(1)">›</button>
+        </div>
+      </div>
+      <div class="cal-weekdays"><div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div></div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>`;
+  }
+
+  if(id==='calculator'){
+    return `<div class="calc-wrap">
+      <div class="calc-display">
+        <div class="calc-expr" id="calc-expr"></div>
+        <div class="calc-num" id="calc-num">0</div>
+      </div>
+      <div class="calc-grid" id="calc-grid"></div>
+    </div>`;
+  }
+
+  if(id==='music'){
+    return `<div class="scroll-pane" style="display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center">
+      <div class="music-disc" id="music-disc" style="background:linear-gradient(135deg,#ff375f,#5e5ce6)">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <div class="eq-bars" id="eq-bars" style="position:absolute;bottom:10px"></div>
+      </div>
+      <div>
+        <div style="font-size:20px;font-weight:700" id="music-title">星空 Lo-Fi（离线合成）</div>
+        <div style="font-size:12.5px;color:var(--text-2);margin-top:4px">Web Audio 实时生成 · 零外链零流量</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn-mac" onclick="selectTrack(0)">星空 Lo-Fi</button>
+        <button class="btn-mac" onclick="selectTrack(1)">雨夜和弦</button>
+        <button class="btn-mac" onclick="selectTrack(2)">深空脉冲</button>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <button class="btn-mac btn-primary" style="padding:8px 24px;border-radius:99px" onclick="toggleAmbientMusic()" id="music-play-btn">▶ 播放氛围音轨</button>
+      </div>
+      <div style="width:100%;max-width:420px;padding:12px;border-radius:12px;background:var(--card-bg);border:1px solid var(--hairline)">
+        <div style="font-size:12px;color:var(--text-2);margin-bottom:8px">或选择本地音乐文件播放（不上传服务器）：</div>
+        <input type="file" accept="audio/*" id="local-audio-file" style="font-size:12px;width:100%">
+        <audio id="local-audio-el" controls style="width:100%;margin-top:8px;display:none"></audio>
+      </div>
+    </div>`;
+  }
+
+  if(id==='photos'){
+    const shots = [
+      {title:'极光山脊', tag:'壁纸灵感', grad:'linear-gradient(135deg,#0f2027,#203a43,#2c5364)'},
+      {title:'赛博黄昏', tag:'色彩研究', grad:'linear-gradient(135deg,#fc466b,#3f5efb)'},
+      {title:'建筑光影', tag:'BIM 视觉', grad:'linear-gradient(135deg,#232526,#414345)'},
+      {title:'翡翠海岸', tag:'自然几何', grad:'linear-gradient(135deg,#11998e,#38ef7d)'},
+      {title:'星云深处', tag:'3D 空间', grad:'linear-gradient(135deg,#141e30,#6a3093)'},
+      {title:'暖阳红杉', tag:'加州印象', grad:'linear-gradient(135deg,#f12711,#f5af19)'}
+    ];
+    return `<div class="scroll-pane">
+      <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:16px">
+        <div><h2 style="margin:0;font-size:22px">图库精选</h2><div style="font-size:12.5px;color:var(--text-2)">点击任意图片可全屏预览或设为灵感参考</div></div>
+        <span class="tag-pill">${shots.length} 张照片</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">
+        ${shots.map(s=>`<div onclick="toast('预览：${s.title}')" style="cursor:pointer;border-radius:12px;overflow:hidden;border:1px solid var(--hairline);background:var(--card-bg)">
+          <div style="height:132px;background:${s.grad};position:relative">
+            <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.28),transparent 55%)"></div>
+          </div>
+          <div style="padding:10px 12px;display:flex;justify-content:space-between;align-items:center">
+            <strong style="font-size:13px">${s.title}</strong>
+            <span style="font-size:11px;color:var(--text-3)">${s.tag}</span>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  if(id==='portfolio'){
+    return `<div class="scroll-pane">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h2 style="margin:0;font-size:24px;letter-spacing:-.4px">XXUUS 作品集</h2>
+          <p style="margin:4px 0 0;font-size:13px;color:var(--text-2)">数字空间 · Three.js 交互地球 · BIM 建模 · AI 工作流</p>
+        </div>
+        <span class="tag-pill">可点击下方地球实时旋转体验</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px">
+        <div style="grid-column:1/-1;border-radius:14px;padding:18px;background:var(--card-bg);border:1px solid var(--hairline);display:grid;grid-template-columns:1fr 220px;gap:16px;align-items:center">
+          <div>
+            <span class="tag-pill">Featured · WebGL / Canvas</span>
+            <h3 style="margin:8px 0 6px;font-size:18px">数字地球实验室（实时线框演示）</h3>
+            <p style="margin:0 0 12px;font-size:13px;color:var(--text-2);line-height:1.6">纯本地 Canvas 实时绘制的三维经纬地球与轨道粒子，无需外部 Three.js CDN，离线也能流畅 60fps 旋转。</p>
+            <button class="btn-mac btn-primary" onclick="toast('可在此跳转到你的地球迁徙项目链接')">查看项目详情</button>
+          </div>
+          <canvas id="earth-canvas" width="210" height="170" style="width:100%;height:170px;border-radius:12px;background:rgba(0,0,0,.28)"></canvas>
+        </div>
+        <div style="border-radius:14px;padding:16px;background:var(--card-bg);border:1px solid var(--hairline)">
+          <span class="tag-pill">BIM</span>
+          <h3 style="margin:10px 0 6px;font-size:16px">BIM 建筑信息三维展示</h3>
+          <p style="margin:0;font-size:12.5px;color:var(--text-2);line-height:1.55">建筑构件参数化展示与施工进度空间视图，支持集成模型截图与轻量化预览。</p>
+        </div>
+        <div style="border-radius:14px;padding:16px;background:var(--card-bg);border:1px solid var(--hairline)">
+          <span class="tag-pill">Web OS</span>
+          <h3 style="margin:10px 0 6px;font-size:16px">XXUUS OS 桌面系统</h3>
+          <p style="margin:0;font-size:12.5px;color:var(--text-2);line-height:1.55">仿 macOS Sequoia 的纯静态浏览器桌面系统，部署于 xxuus.com/os/。</p>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  if(id==='lab'){
+    return `<div class="scroll-pane">
+      <h2 style="margin:0 0 6px;font-size:23px">AI 实验室</h2>
+      <p style="margin:0 0 18px;font-size:13px;color:var(--text-2)">本地 Prompt 调试工作台与创意工具箱（离线可用）</p>
+      <div style="border-radius:14px;padding:16px;background:var(--card-bg);border:1px solid var(--hairline);margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <strong style="font-size:14px">Prompt 灵感组装器</strong>
+          <div style="display:flex;gap:6px">
+            <button class="btn-mac" onclick="fillPrompt('architecture')">建筑渲染</button>
+            <button class="btn-mac" onclick="fillPrompt('ui')">macOS UI</button>
+            <button class="btn-mac btn-primary" onclick="copyPrompt()">复制提示词</button>
+          </div>
+        </div>
+        <textarea id="lab-prompt" class="mac-input" style="width:100%;height:110px;resize:vertical;line-height:1.6">Ultra-clean architectural visualization, frosted glass pavilion in twilight forest, volumetric mist, 8k photorealistic, subtle rim light.</textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+        <div style="padding:14px;border-radius:12px;background:var(--card-bg);border:1px solid var(--hairline)">
+          <strong style="font-size:14px">✦ 图像生成工作流</strong>
+          <p style="font-size:12px;color:var(--text-2);margin:6px 0 0">记录 Midjourney / Flux 参数组合与风格词库。</p>
+        </div>
+        <div style="padding:14px;border-radius:12px;background:var(--card-bg);border:1px solid var(--hairline)">
+          <strong style="font-size:14px">✦ 未来多人互动预留</strong>
+          <p style="font-size:12px;color:var(--text-2);margin:6px 0 0">后续接入 Supabase Realtime 后可在此开启访客 AI 共创板。</p>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  if(id==='terminal'){
+    return `<div class="term-body" id="term-body" onclick="document.getElementById('term-in')?.focus()">
+      <div class="term-line" style="color:#94a3b8">Last login: ${new Date().toDateString()} on ttys001</div>
+      <div class="term-line">XXUUS OS (Sequoia Web Edition) — 输入 <b>help</b> 查看可用命令，支持上下键历史记录。</div>
+      <div id="term-out"></div>
+      <div class="term-prompt"><span>xxuus@MacBook-Pro ~ %</span><input id="term-in" autocomplete="off" spellcheck="false"></div>
+    </div>`;
+  }
+
+  if(id==='settings'){
+    return `<div class="unified-shell">
+      <aside class="unified-sidebar">
+        <div class="sidebar-top" data-drag-handle>${trafficHTML('settings')}</div>
+        <div class="sidebar-scroll">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 10px 14px">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0a84ff,#bf5af2);display:grid;place-items:center;color:#fff;font-weight:700">X</div>
+            <div><div style="font-size:13px;font-weight:600">XXUUS</div><div style="font-size:11px;color:var(--text-2)">本地离线账户</div></div>
+          </div>
+          <button class="side-item active" onclick="renderSettingsTab('appearance',this)">🎨 外观与主题色</button>
+          <button class="side-item" onclick="renderSettingsTab('wallpaper',this)">🖼️ 桌面壁纸</button>
+          <button class="side-item" onclick="renderSettingsTab('dock',this)">🚀 程序坞与桌面</button>
+          <button class="side-item" onclick="renderSettingsTab('general',this)">⚙️ 通用与关于</button>
+        </div>
+      </aside>
+      <div class="unified-main">
+        <div class="unified-toolbar" data-drag-handle><strong id="settings-title" style="font-size:14px">外观与主题色</strong></div>
+        <div class="scroll-pane" id="settings-pane"></div>
+      </div>
+    </div>`;
+  }
+
+  if(id==='about'){
+    return `<div style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 24px 20px;gap:14px">
+      <div style="margin-top:4px">${getAppIconSVG('about', 76)}</div>
+      <div>
+        <div style="font-size:22px;font-weight:700;letter-spacing:-.4px">XXUUS OS</div>
+        <div style="font-size:12px;color:var(--text-2);margin-top:2px">Sequoia Web Edition 2.0</div>
+      </div>
+      <div style="width:100%;border-radius:12px;background:var(--card-bg);border:1px solid var(--hairline);padding:12px 14px;font-size:12px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-2)">处理器</span><span>Browser Neural Engine</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-2)">运行模式</span><span>100% 离线纯静态前端</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-2)">本地存储</span><span>LocalStorage Ready</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-2)">域名目标</span><span>xxuus.com/os/</span></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="btn-mac" onclick="openApp('settings')">系统设置...</button>
+        <button class="btn-mac btn-primary" onclick="lockScreen()">锁定屏幕</button>
+      </div>
+    </div>`;
+  }
+  return '';
+}
+
+function initAppRuntime(id, win){
+  if(id==='finder') renderFinder();
+  if(id==='safari') renderSafari();
+  if(id==='notes') renderNotes();
+  if(id==='calendar') renderCalendar();
+  if(id==='calculator') initCalculator(win);
+  if(id==='terminal') initTerminal(win);
+  if(id==='settings') renderSettingsTab('appearance');
+  if(id==='portfolio') initEarthCanvas(win);
+  if(id==='music') initMusicUI(win);
+}
+
+/* ===================== FINDER LOGIC ===================== */
+function switchFinder(folder){
+  STATE.finderFolder = folder;
+  renderFinder();
+}
+function setFinderView(v){
+  STATE.finderView = v;
+  document.getElementById('fv-grid')?.classList.toggle('active', v==='grid');
+  document.getElementById('fv-list')?.classList.toggle('active', v==='list');
+  renderFinder();
+}
+function renderFinder(){
+  const body = document.getElementById('finder-body');
+  if(!body) return;
+  const names = {desktop:'桌面',documents:'文稿',portfolio:'作品集',downloads:'下载',trash:'废纸篓'};
+  document.getElementById('finder-title').textContent = names[STATE.finderFolder] || '访达';
+  document.querySelectorAll('#win-finder .side-item[data-folder]').forEach(el=>el.classList.toggle('active', el.dataset.folder===STATE.finderFolder));
+  const q = (document.getElementById('finder-search')?.value || '').trim().toLowerCase();
+  const list = (VFS[STATE.finderFolder] || []).filter(item=>item.name.toLowerCase().includes(q));
+  document.getElementById('finder-count').textContent = `${list.length} 个项目`;
+
+  if(STATE.finderView==='grid'){
+    body.innerHTML = `<div class="finder-grid">${list.map((it,idx)=>`
+      <div class="finder-file" onclick="selectFinderItem(this)" ondblclick="openFinderItem(${idx})">
+        ${getAppIconSVG(it.target || 'file', 46)}
+        <span class="fname">${it.name}</span>
+      </div>`).join('')}</div>`;
+  } else {
+    body.innerHTML = `<div class="finder-list">
+      <div class="finder-row" style="font-weight:600;color:var(--text-3);font-size:11px"><span>名称</span><span>大小</span><span>类型</span></div>
+      ${list.map((it,idx)=>`
+      <div class="finder-row" onclick="selectFinderItem(this)" ondblclick="openFinderItem(${idx})">
+        <span style="display:flex;align-items:center;gap:8px">${getAppIconSVG(it.target||'file',18)} ${it.name}</span>
+        <span>${it.size}</span><span>${it.kind==='app'?'应用程序':'文稿'}</span>
+      </div>`).join('')}</div>`;
+  }
+}
+function selectFinderItem(el){
+  el.parentElement.querySelectorAll('.selected').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function openFinderItem(idx){
+  const q = (document.getElementById('finder-search')?.value || '').trim().toLowerCase();
+  const list = (VFS[STATE.finderFolder] || []).filter(item=>item.name.toLowerCase().includes(q));
+  const it = list[idx];
+  if(!it) return;
+  if(it.kind==='app') openApp(it.target);
+  else openFilePreview(it.name, it.content);
+}
+function openFilePreview(name, content){
+  const existing = document.getElementById('file-preview-modal');
+  if(existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'file-preview-modal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:50000;background:rgba(0,0,0,.38);display:grid;place-items:center;padding:20px';
+  modal.onclick = e=>{if(e.target===modal)modal.remove()};
+  modal.innerHTML = `<div style="width:min(540px,100%);border-radius:14px;background:var(--popover-bg);backdrop-filter:blur(40px);border:1px solid var(--border-inner);box-shadow:var(--shadow-active);overflow:hidden">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--hairline);display:flex;justify-content:space-between;align-items:center">
+      <strong>快速查看 — ${name}</strong>
+      <button class="btn-mac" onclick="this.closest('#file-preview-modal').remove()">关闭</button>
+    </div>
+    <pre style="margin:0;padding:18px;font-family:var(--font);font-size:13.5px;line-height:1.7;white-space:pre-wrap;max-height:60vh;overflow:auto">${content}</pre>
+  </div>`;
+  document.body.appendChild(modal);
+}
+
+/* ===================== SAFARI LOGIC ===================== */
+function renderSafari(){
+  const tabsEl = document.getElementById('safari-tabs');
+  const view = document.getElementById('safari-view');
+  const urlIn = document.getElementById('safari-url-input');
+  if(!tabsEl || !view) return;
+  tabsEl.innerHTML = STATE.safariTabs.map((t,i)=>`
+    <button class="safari-tab ${i===STATE.safariActiveTab?'active':''}" onclick="STATE.safariActiveTab=${i};renderSafari()">
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</span>
+      ${STATE.safariTabs.length>1?`<span onclick="event.stopPropagation();STATE.safariTabs.splice(${i},1);STATE.safariActiveTab=0;renderSafari()" style="opacity:.6">×</span>`:''}
+    </button>`).join('');
+  const cur = STATE.safariTabs[STATE.safariActiveTab];
+  urlIn.value = cur.url;
+  view.innerHTML = `
+    <div style="max-width:680px;margin:14px auto">
+      <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:10px">个人收藏</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-bottom:26px">
+        <button class="cc-tile-btn" style="flex-direction:column;text-align:center" onclick="window.open('https://xxuus.com','_blank')">
+          <div style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:#fff;display:grid;place-items:center;font-weight:700">X</div>
+          <span style="font-size:12px">xxuus.com</span>
+        </button>
+        <button class="cc-tile-btn" style="flex-direction:column;text-align:center" onclick="window.open('https://github.com','_blank')">
+          <div style="width:42px;height:42px;border-radius:10px;background:#24292e;color:#fff;display:grid;place-items:center;font-weight:700">GH</div>
+          <span style="font-size:12px">GitHub</span>
+        </button>
+        <button class="cc-tile-btn" style="flex-direction:column;text-align:center" onclick="window.open('https://dash.cloudflare.com','_blank')">
+          <div style="width:42px;height:42px;border-radius:10px;background:#f38020;color:#fff;display:grid;place-items:center;font-weight:700">CF</div>
+          <span style="font-size:12px">Cloudflare</span>
+        </button>
+      </div>
+      <div style="border-radius:14px;padding:18px;background:var(--card-bg);border:1px solid var(--hairline)">
+        <strong style="font-size:15px">当前标签页：${cur.url}</strong>
+        <p style="font-size:13px;color:var(--text-2);line-height:1.6">受现代浏览器安全策略（X-Frame-Options）限制，第三方网站不允许被强行嵌入 iframe。在地址栏输入网址按回车，或点击下方按钮可在真实浏览器标签页中打开。</p>
+        <button class="btn-mac btn-primary" onclick="window.open('${cur.url}','_blank')">在新窗口打开 ${cur.url}</button>
+      </div>
+    </div>`;
+}
+function safariGo(){
+  let v = document.getElementById('safari-url-input').value.trim();
+  if(!v) return;
+  if(!/^https?:\/\//i.test(v)) v = 'https://' + v;
+  STATE.safariTabs[STATE.safariActiveTab] = {title:v.replace(/^https?:\/\//,''), url:v};
+  renderSafari();
+  window.open(v,'_blank');
+}
+function safariNewTab(){
+  STATE.safariTabs.push({title:'起始页', url:'https://xxuus.com'});
+  STATE.safariActiveTab = STATE.safariTabs.length-1;
+  renderSafari();
+}
+
+/* ===================== NOTES LOGIC ===================== */
+function renderNotes(){
+  const list = document.getElementById('notes-list');
+  if(!list) return;
+  list.innerHTML = STATE.notes.map(n=>`
+    <div class="notes-list-item ${n.id===STATE.activeNoteId?'active':''}" onclick="STATE.activeNoteId='${n.id}';renderNotes()">
+      <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${n.title||'无标题备忘录'}</div>
+      <div class="notes-meta">${n.date}</div>
+    </div>`).join('');
+  const cur = STATE.notes.find(n=>n.id===STATE.activeNoteId) || STATE.notes[0];
+  if(cur){
+    STATE.activeNoteId = cur.id;
+    document.getElementById('note-title-input').value = cur.title;
+    document.getElementById('note-body-input').value = cur.body;
+    document.getElementById('note-date-bar').textContent = cur.date + ' · 自动保存于本机';
+  }
+}
+function saveActiveNote(){
+  const cur = STATE.notes.find(n=>n.id===STATE.activeNoteId);
+  if(!cur) return;
+  cur.title = document.getElementById('note-title-input').value;
+  cur.body = document.getElementById('note-body-input').value;
+  cur.date = '刚刚';
+  localStorage.setItem('xxuus-notes-v2', JSON.stringify(STATE.notes));
+  const item = document.querySelector(`.notes-list-item.active div`);
+  if(item) item.textContent = cur.title || '无标题备忘录';
+}
+function createNote(){
+  const id = 'n' + Date.now();
+  STATE.notes.unshift({id, title:'新建备忘录', date:'刚刚', body:''});
+  STATE.activeNoteId = id;
+  localStorage.setItem('xxuus-notes-v2', JSON.stringify(STATE.notes));
+  renderNotes();
+}
+function deleteActiveNote(){
+  if(STATE.notes.length<=1){toast('至少保留一条备忘录');return}
+  STATE.notes = STATE.notes.filter(n=>n.id!==STATE.activeNoteId);
+  STATE.activeNoteId = STATE.notes[0].id;
+  localStorage.setItem('xxuus-notes-v2', JSON.stringify(STATE.notes));
+  renderNotes();
+}
+
+/* ===================== CALENDAR LOGIC (7-COLUMN) ===================== */
+function renderCalendar(){
+  const grid = document.getElementById('cal-grid');
+  const title = document.getElementById('cal-title');
+  if(!grid || !title) return;
+  const y = STATE.calYear, m = STATE.calMonth;
+  title.textContent = `${y}年 ${m+1}月`;
+  const firstDay = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const prevDays = new Date(y, m, 0).getDate();
+  const now = new Date();
+  let html = '';
+  for(let i=firstDay-1;i>=0;i--){
+    html += `<div class="cal-cell other-month"><div class="cal-day-num">${prevDays-i}</div></div>`;
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday = y===now.getFullYear() && m===now.getMonth() && d===now.getDate();
+    const ev = isToday ? '<div class="cal-event">XXUUS OS v2 发布</div>' : (d===20?'<div class="cal-event">创意实验室同步</div>':'');
+    html += `<div class="cal-cell ${isToday?'today':''}"><div class="cal-day-num">${d}</div>${ev}</div>`;
+  }
+  const totalCells = firstDay + daysInMonth;
+  const rem = (7 - (totalCells % 7)) % 7;
+  for(let i=1;i<=rem;i++){
+    html += `<div class="cal-cell other-month"><div class="cal-day-num">${i}</div></div>`;
+  }
+  grid.innerHTML = html;
+}
+function shiftCal(delta){
+  STATE.calMonth += delta;
+  if(STATE.calMonth<0){STATE.calMonth=11;STATE.calYear--}
+  if(STATE.calMonth>11){STATE.calMonth=0;STATE.calYear++}
+  renderCalendar();
+}
+function resetCal(){const n=new Date();STATE.calYear=n.getFullYear();STATE.calMonth=n.getMonth();renderCalendar()}
+
+/* ===================== CALCULATOR LOGIC ===================== */
+function initCalculator(win){
+  const grid = win.querySelector('#calc-grid');
+  const numEl = win.querySelector('#calc-num');
+  const exprEl = win.querySelector('#calc-expr');
+  let cur='0', prev=null, op=null, resetNext=false;
+  const btns = [
+    {t:'AC',c:'calc-fn'},{t:'±',c:'calc-fn'},{t:'%',c:'calc-fn'},{t:'÷',c:'calc-op'},
+    {t:'7',c:'calc-digit'},{t:'8',c:'calc-digit'},{t:'9',c:'calc-digit'},{t:'×',c:'calc-op'},
+    {t:'4',c:'calc-digit'},{t:'5',c:'calc-digit'},{t:'6',c:'calc-digit'},{t:'−',c:'calc-op'},
+    {t:'1',c:'calc-digit'},{t:'2',c:'calc-digit'},{t:'3',c:'calc-digit'},{t:'+',c:'calc-op'},
+    {t:'0',c:'calc-digit calc-zero'},{t:'.',c:'calc-digit'},{t:'=',c:'calc-op'}
+  ];
+  const calc = (a,b,o)=>{
+    if(o==='+') return a+b;
+    if(o==='−') return a-b;
+    if(o==='×') return a*b;
+    if(o==='÷') return b===0 ? '错误' : a/b;
+    return b;
+  };
+  const fmt = v => {
+    if(v==='错误') return v;
+    const n = Number(v);
+    if(!Number.isFinite(n)) return '错误';
+    return String(Number(n.toPrecision(10)));
+  };
+  const press = k => {
+    if(k==='AC'){cur='0';prev=null;op=null;resetNext=false;exprEl.textContent='';}
+    else if(k==='±'){cur=cur.startsWith('-')?cur.slice(1):(cur==='0'?'0':'-'+cur);}
+    else if(k==='%'){cur=fmt(Number(cur)/100);}
+    else if(['+','−','×','÷'].includes(k)){
+      if(op && !resetNext && prev!==null){ cur = fmt(calc(Number(prev), Number(cur), op)); }
+      prev = cur; op = k; resetNext = true;
+      exprEl.textContent = `${prev} ${op}`;
+    } else if(k==='='){
+      if(op && prev!==null){
+        exprEl.textContent = `${prev} ${op} ${cur} =`;
+        cur = fmt(calc(Number(prev), Number(cur), op));
+        prev = null; op = null; resetNext = true;
+      }
+    } else {
+      if(resetNext){cur = k==='.'?'0.':k; resetNext=false;}
+      else if(k==='.'){if(!cur.includes('.')) cur+='.';}
+      else cur = cur==='0'?k:cur+k;
+    }
+    numEl.textContent = cur;
+    numEl.style.fontSize = cur.length>8 ? '32px' : '48px';
+  };
+  grid.innerHTML = '';
+  btns.forEach(b=>{
+    const btn = document.createElement('button');
+    btn.className = 'calc-btn ' + b.c;
+    btn.textContent = b.t;
+    btn.onclick = ()=>press(b.t);
+    grid.appendChild(btn);
+  });
+}
+
+/* ===================== TERMINAL LOGIC ===================== */
+function initTerminal(win){
+  const input = win.querySelector('#term-in');
+  const out = win.querySelector('#term-out');
+  const body = win.querySelector('#term-body');
+  const hist = []; let hIdx = 0;
+  setTimeout(()=>input.focus(), 50);
+  input.addEventListener('keydown', e=>{
+    if(e.key==='ArrowUp'){if(hIdx>0){hIdx--;input.value=hist[hIdx]}e.preventDefault();return}
+    if(e.key==='ArrowDown'){if(hIdx<hist.length-1){hIdx++;input.value=hist[hIdx]}else{hIdx=hist.length;input.value=''}e.preventDefault();return}
+    if(e.key!=='Enter') return;
+    const raw = input.value.trim();
+    if(raw){hist.push(raw); hIdx=hist.length;}
+    const cmdLine = document.createElement('div');
+    cmdLine.className = 'term-line';
+    cmdLine.innerHTML = `<span style="color:#30d158">xxuus@MacBook-Pro ~ %</span> ${raw}`;
+    out.appendChild(cmdLine);
+
+    let res = '';
+    const [cmd, ...args] = raw.split(/\s+/);
+    if(cmd==='help') res = '可用命令：help, ls, neofetch, open <app>, theme <dark|light>, date, whoami, clear';
+    else if(cmd==='ls') res = 'Desktop/     Documents/     Portfolio/     Downloads/     README.md';
+    else if(cmd==='whoami') res = 'xxuus (Offline Web Desktop Administrator)';
+    else if(cmd==='date') res = new Date().toLocaleString('zh-CN');
+    else if(cmd==='clear'){ out.innerHTML=''; input.value=''; return; }
+    else if(cmd==='theme'){
+      if(args[0]==='light'||args[0]==='dark'){ setTheme(args[0]); res='主题已切换为 '+args[0]; }
+      else res='用法：theme dark 或 theme light';
+    }
+    else if(cmd==='open'){
+      const t = (args[0]||'').toLowerCase();
+      const found = APPS.find(a=>a.id===t || a.name.toLowerCase()===t);
+      if(found){ openApp(found.id); res='正在打开 '+found.name+'...'; }
+      else res='未找到应用。可输入：finder, safari, notes, calendar, calculator, music, portfolio, lab, settings';
+    }
+    else if(cmd==='neofetch'){
+      res = `   __  __ __  __ _   _ _   _ ____     OS: XXUUS OS Sequoia Web 2.0\n   \\ \\/ / \\ \\/ /| | | | | | / ___|    Host: Browser Offline Runtime\n    \\  /   \\  / | | | | | | \\___ \\    Theme: ${STATE.theme} / Accent: ${STATE.accent}\n    /  \\   /  \\ | |_| | |_| |___) |   Shell: zsh 5.9 (simulated)\n   /_/\\_\\ /_/\\_\\ \\___/ \\___/|____/    Deploy: xxuus.com/os/`;
+    }
+    else if(cmd) res = `zsh: command not found: ${cmd}`;
+
+    if(res){
+      const r = document.createElement('div');
+      r.className = 'term-line';
+      r.style.color = '#cbd5e1';
+      r.textContent = res;
+      out.appendChild(r);
+    }
+    input.value='';
+    body.scrollTop = body.scrollHeight;
+  });
+}
+
+/* ===================== WEB AUDIO AMBIENT SYNTH (OFFLINE MUSIC) ===================== */
+let audioCtx=null, synthTimer=null, eqTimer=null;
+const TRACKS = [
+  {name:'星空 Lo-Fi（离线合成）', notes:[261.63, 329.63, 392.00, 493.88, 392.00, 329.63]},
+  {name:'雨夜和弦（离线合成）', notes:[220.00, 261.63, 329.63, 440.00, 349.23, 293.66]},
+  {name:'深空脉冲（离线合成）', notes:[174.61, 220.00, 261.63, 349.23, 329.63, 261.63]}
+];
+function initMusicUI(win){
+  const eq = win.querySelector('#eq-bars');
+  if(eq) eq.innerHTML = Array.from({length:8},()=>'<div class="eq-bar"></div>').join('');
+  const fileIn = win.querySelector('#local-audio-file');
+  fileIn.onchange = ()=>{
+    if(fileIn.files[0]){
+      stopAmbientSynth();
+      const el = win.querySelector('#local-audio-el');
+      el.src = URL.createObjectURL(fileIn.files[0]);
+      el.style.display = 'block';
+      el.play();
+      win.querySelector('#music-title').textContent = fileIn.files[0].name;
+    }
+  };
+  syncMusicLabels();
+}
+function selectTrack(idx){
+  STATE.musicTrack = idx;
+  if(STATE.musicPlaying){ stopAmbientSynth(); startAmbientSynth(); }
+  syncMusicLabels();
+}
+function toggleAmbientMusic(){
+  if(STATE.musicPlaying) stopAmbientSynth();
+  else startAmbientSynth();
+  syncMusicLabels();
+}
+function startAmbientSynth(){
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  STATE.musicPlaying = true;
+  let step = 0;
+  const playNote = ()=>{
+    if(!STATE.musicPlaying) return;
+    const notes = TRACKS[STATE.musicTrack].notes;
+    const freq = notes[step % notes.length];
+    step++;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.35);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.2);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + 2.3);
+  };
+  playNote();
+  synthTimer = setInterval(playNote, 1300);
+  eqTimer = setInterval(()=>{
+    document.querySelectorAll('.eq-bar').forEach(b=>b.style.height=(4+Math.random()*14)+'px');
+  },160);
+}
+function stopAmbientSynth(){
+  STATE.musicPlaying = false;
+  clearInterval(synthTimer); clearInterval(eqTimer);
+  document.querySelectorAll('.eq-bar').forEach(b=>b.style.height='4px');
+}
+function syncMusicLabels(){
+  const t = TRACKS[STATE.musicTrack].name;
+  const btn = document.getElementById('music-play-btn');
+  const ccBtn = document.getElementById('cc-music-btn');
+  const mt = document.getElementById('music-title');
+  const cmt = document.getElementById('cc-music-title');
+  const cms = document.getElementById('cc-music-status');
+  const disc = document.getElementById('music-disc');
+  if(mt) mt.textContent = t;
+  if(cmt) cmt.textContent = t.split('（')[0];
+  if(cms) cms.textContent = STATE.musicPlaying ? '正在播放 · WebAudio' : '已暂停 · 离线合成';
+  if(btn) btn.textContent = STATE.musicPlaying ? '⏸ 暂停播放' : '▶ 播放氛围音轨';
+  if(ccBtn) ccBtn.textContent = STATE.musicPlaying ? '暂停' : '播放';
+  if(disc) disc.classList.toggle('playing', STATE.musicPlaying);
+}
+
+/* ===================== PORTFOLIO 3D GLOBE CANVAS ===================== */
+function initEarthCanvas(win){
+  const c = win.querySelector('#earth-canvas');
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  let angle = 0;
+  function draw(){
+    if(!document.body.contains(c)) return;
+    ctx.clearRect(0,0,c.width,c.height);
+    const cx=c.width/2, cy=c.height/2, r=64;
+    ctx.strokeStyle = 'rgba(56,189,248,0.42)';
+    ctx.lineWidth = 1;
+    // Outer sphere
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+    // Latitudes
+    for(let lat=-60; lat<=60; lat+=30){
+      const y = cy + Math.sin(lat*Math.PI/180)*r;
+      const rx = Math.cos(lat*Math.PI/180)*r;
+      ctx.beginPath(); ctx.ellipse(cx,y,rx,rx*0.22,0,0,Math.PI*2); ctx.stroke();
+    }
+    // Longitudes
+    for(let i=0;i<6;i++){
+      const a = angle + i*(Math.PI/6);
+      const rx = Math.abs(Math.cos(a))*r;
+      ctx.beginPath(); ctx.ellipse(cx,cy,rx,r,0,0,Math.PI*2); ctx.stroke();
+    }
+    // Orbiting satellite dot
+    const sx = cx + Math.cos(angle*1.4)*(r+14);
+    const sy = cy + Math.sin(angle*1.4)*(r*0.42);
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(sx,sy,3,0,Math.PI*2); ctx.fill();
+    angle += 0.012;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ===================== AI LAB HELPERS ===================== */
+function fillPrompt(k){
+  const ta = document.getElementById('lab-prompt');
+  if(!ta) return;
+  ta.value = k==='architecture'
+    ? 'Ultra-clean architectural visualization, frosted glass pavilion in twilight forest, volumetric mist, 8k photorealistic, subtle rim light.'
+    : 'macOS Sequoia inspired web desktop interface, translucent frosted glass window, unified sidebar vibrancy, squircle SVG icons, crisp typography.';
+}
+function copyPrompt(){
+  const ta = document.getElementById('lab-prompt');
+  if(!ta) return;
+  navigator.clipboard?.writeText(ta.value);
+  toast('已复制提示词到剪贴板');
+}
+
+/* ===================== SETTINGS TABS ===================== */
+function renderSettingsTab(tab, btn){
+  if(btn){
+    btn.closest('.sidebar-scroll').querySelectorAll('.side-item').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const pane = document.getElementById('settings-pane');
+  const title = document.getElementById('settings-title');
+  if(!pane) return;
+  if(tab==='appearance'){
+    title.textContent = '外观与主题色';
+    pane.innerHTML = `
+      <div class="cc-card" style="margin-bottom:14px">
+        <strong style="font-size:14px">系统外观</strong>
+        <div style="display:flex;gap:12px;margin-top:8px">
+          <button class="btn-mac ${STATE.theme==='light'?'btn-primary':''}" onclick="setTheme('light');renderSettingsTab('appearance')">☀ 浅色模式</button>
+          <button class="btn-mac ${STATE.theme==='dark'?'btn-primary':''}" onclick="setTheme('dark');renderSettingsTab('appearance')">☾ 深色模式</button>
+        </div>
+      </div>
+      <div class="cc-card">
+        <strong style="font-size:14px">强调色</strong>
+        <div style="display:flex;gap:12px;margin-top:10px">
+          ${[['blue','#0a84ff'],['purple','#bf5af2'],['pink','#ff375f'],['orange','#ff9f0a'],['green','#30d158']].map(([k,hex])=>`
+            <button onclick="setAccent('${k}');renderSettingsTab('appearance')" style="width:28px;height:28px;border-radius:50%;background:${hex};border:${STATE.accent===k?'3px solid #fff':'0'};box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer"></button>
+          `).join('')}
+        </div>
+      </div>`;
+  } else if(tab==='wallpaper'){
+    title.textContent = '桌面壁纸';
+    pane.innerHTML = `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px">
+      ${WALLPAPERS.map((w,i)=>`
+        <div onclick="setWallpaper(${i});renderSettingsTab('wallpaper')" style="cursor:pointer;border-radius:12px;overflow:hidden;border:2px solid ${STATE.wallpaper===i?'var(--accent)':'var(--hairline)'}">
+          <div style="height:105px;background:${w.bg}"></div>
+          <div style="padding:8px 12px;font-size:13px;font-weight:600;background:var(--card-bg)">${w.name}</div>
+        </div>`).join('')}
+    </div>`;
+  } else if(tab==='dock'){
+    title.textContent = '程序坞与桌面';
+    pane.innerHTML = `<div class="cc-card" style="gap:14px">
+      <label style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
+        <span>Dock 悬停波浪放大效果</span>
+        <input type="checkbox" ${STATE.dockMag?'checked':''} onchange="STATE.dockMag=this.checked;localStorage.setItem('xxuus-mag',this.checked);toast('已更新 Dock 设置')">
+      </label>
+      <label style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
+        <span>在桌面上显示系统图标</span>
+        <input type="checkbox" ${STATE.showDeskIcons?'checked':''} onchange="STATE.showDeskIcons=this.checked;localStorage.setItem('xxuus-desk',this.checked);buildDesktopIcons()">
+      </label>
+    </div>`;
+  } else {
+    title.textContent = '通用与部署信息';
+    pane.innerHTML = `<div class="cc-card">
+      <strong style="font-size:15px">纯离线静态架构说明</strong>
+      <p style="font-size:13px;color:var(--text-2);line-height:1.65;margin:4px 0">
+        当前版本无需自购服务器，所有桌面交互、文件预览、备忘录持久化、Canvas 3D 演示及 WebAudio 合成音乐均在本地浏览器运行。
+        上传至 GitHub Pages 的 <code>/os/index.html</code> 即可通过 <b>xxuus.com/os/</b> 全球访问。
+      </p>
+    </div>`;
+  }
+}
+
+/* ===================== MENUS, SPOTLIGHT, LAUNCHPAD, LOCK ===================== */
+function closeAllMenus(){
+  document.getElementById('mac-menu').classList.remove('show');
+  document.getElementById('control-center').classList.remove('show');
+  document.getElementById('notif-center').classList.remove('show');
+}
+window._menuActions = [];
+function showMacMenu(x, y, items){
+  closeAllMenus();
+  const m = document.getElementById('mac-menu');
+  window._menuActions = [];
+  m.innerHTML = items.map(it=>{
+    if(it==='-') return '<div class="mac-sep"></div>';
+    const idx = window._menuActions.push(it.fn) - 1;
+    return `<button class="mac-menu-btn" onclick="window._menuActions[${idx}]();closeAllMenus()"><span>${it.label}</span>${it.kbd?`<span class="kbd">${it.kbd}</span>`:''}</button>`;
+  }).join('');
+  m.style.left = Math.min(x, window.innerWidth - 220) + 'px';
+  m.style.top = Math.min(y, window.innerHeight - 240) + 'px';
+  m.classList.add('show');
+}
+function toggleAppleMenu(e){
+  e.stopPropagation();
+  showMacMenu(10, 32, [
+    {label:'关于本机', fn:()=>openApp('about')},
+    '-',
+    {label:'系统设置...', fn:()=>openApp('settings')},
+    {label:'启动台', kbd:'Launchpad', fn:()=>toggleLaunchpad(true)},
+    '-',
+    {label:'锁定屏幕', kbd:'⌃⌘Q', fn:()=>lockScreen()},
+    {label:'重新启动演示', fn:()=>location.reload()}
+  ]);
+}
+function toggleAppDropdown(e){
+  e.stopPropagation();
+  showMacMenu(48, 32, [
+    {label:'关于 XXUUS OS', fn:()=>openApp('about')},
+    {label:'隐藏当前窗口', kbd:'⌘H', fn:()=>{if(STATE.windows[STATE.activeApp])minWin(STATE.activeApp)}},
+    {label:'关闭当前窗口', kbd:'⌘W', fn:()=>{if(STATE.windows[STATE.activeApp])closeWin(STATE.activeApp)}}
+  ]);
+}
+function toggleFileDropdown(e){
+  e.stopPropagation();
+  showMacMenu(100, 32, [
+    {label:'新建访达窗口', kbd:'⌘N', fn:()=>openApp('finder')},
+    {label:'打开聚焦搜索', kbd:'⌘K', fn:()=>openSpotlight()},
+    {label:'新建备忘录', fn:()=>{openApp('notes');createNote()}}
+  ]);
+}
+function toggleWindowDropdown(e){
+  e.stopPropagation();
+  showMacMenu(150, 32, [
+    {label:'最小化所有窗口', fn:()=>Object.keys(STATE.windows).forEach(k=>minWin(k))},
+    {label:'关闭所有窗口', fn:()=>Object.keys(STATE.windows).forEach(k=>closeWin(k))}
+  ]);
+}
+function toggleControlCenter(e){
+  e.stopPropagation();
+  const cc = document.getElementById('control-center');
+  const was = cc.classList.contains('show');
+  closeAllMenus();
+  if(!was) cc.classList.add('show');
+}
+function toggleNotif(e){
+  e.stopPropagation();
+  const nc = document.getElementById('notif-center');
+  const was = nc.classList.contains('show');
+  closeAllMenus();
+  if(!was) nc.classList.add('show');
+}
+
+document.addEventListener('click', e=>{
+  if(!e.target.closest('#mac-menu,#control-center,#notif-center,.mb-item')) closeAllMenus();
+});
+
+document.getElementById('desktop').addEventListener('contextmenu', e=>{
+  if(e.target.closest('.window,#dock,#menubar')) return;
+  e.preventDefault();
+  showMacMenu(e.clientX, e.clientY, [
+    {label:'新建访达窗口', fn:()=>openApp('finder')},
+    {label:'更改壁纸...', fn:()=>{openApp('settings');setTimeout(()=>renderSettingsTab('wallpaper'),40)}},
+    '-',
+    {label:'聚焦搜索', kbd:'⌘K', fn:()=>openSpotlight()},
+    {label:'切换深浅色模式', fn:()=>toggleTheme()},
+    '-',
+    {label:'锁定屏幕', fn:()=>lockScreen()}
+  ]);
+});
+
+/* Spotlight */
+let spotIndex = 0, spotMatches = [];
+function openSpotlight(){
+  closeAllMenus();
+  const bd = document.getElementById('spotlight-backdrop');
+  bd.classList.add('show');
+  const inp = document.getElementById('spot-input');
+  inp.value = '';
+  renderSpotlight();
+  setTimeout(()=>inp.focus(), 20);
+}
+function closeSpotlight(){document.getElementById('spotlight-backdrop').classList.remove('show')}
+function renderSpotlight(){
+  const q = document.getElementById('spot-input').value.trim().toLowerCase();
+  const res = document.getElementById('spot-results');
+  spotMatches = [];
+  // Quick Math
+  if(q && /^[0-9+\-*/().\s]+$/.test(q)){
+    try{
+      const ans = Function('"use strict";return ('+q+')')();
+      if(typeof ans==='number' && Number.isFinite(ans)){
+        spotMatches.push({title:`= ${ans}`, sub:'计算器结果', icon:'calculator', act:()=>{navigator.clipboard?.writeText(String(ans));toast('已复制计算结果：'+ans)}});
+      }
+    }catch{}
+  }
+  APPS.filter(a=>!q || a.name.toLowerCase().includes(q) || a.id.includes(q)).forEach(a=>{
+    spotMatches.push({title:a.name, sub:'应用程序', icon:a.id, act:()=>openApp(a.id)});
+  });
+  if(!q || '深色浅色主题'.includes(q)) spotMatches.push({title:'切换深色 / 浅色外观', sub:'系统操作', icon:'settings', act:()=>toggleTheme()});
+  if(!q || '壁纸背景'.includes(q)) spotMatches.push({title:'下一张桌面壁纸', sub:'系统操作', icon:'photos', act:()=>nextWallpaper()});
+  if(!q || '锁屏锁定'.includes(q)) spotMatches.push({title:'锁定屏幕', sub:'系统操作', icon:'about', act:()=>lockScreen()});
+
+  spotIndex = 0;
+  res.innerHTML = spotMatches.slice(0,8).map((m,i)=>`
+    <div class="spot-item ${i===0?'active':''}" onclick="spotMatches[${i}].act();closeSpotlight()">
+      ${getAppIconSVG(m.icon, 26)}
+      <strong>${m.title}</strong>
+      <span class="spot-sub">${m.sub}</span>
+    </div>`).join('');
+}
+function spotKey(e){
+  const items = document.querySelectorAll('.spot-item');
+  if(e.key==='Escape'){closeSpotlight();return}
+  if(e.key==='ArrowDown'){spotIndex=(spotIndex+1)%items.length;items.forEach((x,i)=>x.classList.toggle('active',i===spotIndex));e.preventDefault()}
+  if(e.key==='ArrowUp'){spotIndex=(spotIndex-1+items.length)%items.length;items.forEach((x,i)=>x.classList.toggle('active',i===spotIndex));e.preventDefault()}
+  if(e.key==='Enter' && spotMatches[spotIndex]){spotMatches[spotIndex].act();closeSpotlight()}
+}
+
+/* Launchpad */
+function toggleLaunchpad(force){
+  const lp = document.getElementById('launchpad');
+  const show = force!==undefined ? force : !lp.classList.contains('show');
+  lp.classList.toggle('show', show);
+  if(show){document.getElementById('lp-search').value='';renderLaunchpad();}
+}
+function renderLaunchpad(){
+  const q = document.getElementById('lp-search').value.trim().toLowerCase();
+  const grid = document.getElementById('lp-grid');
+  grid.innerHTML = APPS.filter(a=>!q || a.name.toLowerCase().includes(q)).map(a=>`
+    <button class="lp-app" onclick="openApp('${a.id}')">
+      ${getAppIconSVG(a.id, 68)}
+      <span>${a.name}</span>
+    </button>`).join('');
+}
+
+/* Lock & Toast */
+function lockScreen(){closeAllMenus();document.getElementById('lockscreen').classList.add('show');setTimeout(()=>document.getElementById('lock-input').focus(),30)}
+function unlockScreen(){document.getElementById('lockscreen').classList.remove('show');document.getElementById('lock-input').value='';toast('欢迎回来，XXUUS')}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.tm); toast.tm = setTimeout(()=>t.classList.remove('show'), 2300);
+}
+
+/* Keyboard Shortcuts */
+document.addEventListener('keydown', e=>{
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){e.preventDefault();openSpotlight()}
+  if(e.key==='Escape'){closeSpotlight();toggleLaunchpad(false);closeAllMenus()}
+});
+
+/* ===================== INIT ===================== */
+applyThemeAndWallpaper();
+buildDesktopIcons();
+buildDock();
+openApp('finder');
+</script>
+</body>
+</html>
