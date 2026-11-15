@@ -24,50 +24,50 @@ html[data-accent="green"]{--accent:#30d158;--accent-soft:rgba(48,209,88,.22);--a
 
 html[data-theme="dark"]{
   --text:#f5f5f7;
-  --text-2:rgba(245,245,247,.68);
-  --text-3:rgba(245,245,247,.42);
-  --menubar-bg:rgba(22,24,31,.48);
-  --menubar-border:rgba(255,255,255,.10);
+  --text-2:rgba(245,245,247,.72);
+  --text-3:rgba(245,245,247,.46);
+  --menubar-bg:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));
+  --menubar-border:rgba(255,255,255,.22);
   --menubar-text:#f5f5f7;
-  --win-bg:rgba(30,32,38,.78);
-  --win-body:rgba(24,25,30,.72);
-  --sidebar-bg:rgba(28,30,36,.52);
-  --toolbar-bg:rgba(38,40,48,.58);
-  --card-bg:rgba(255,255,255,.06);
-  --card-hover:rgba(255,255,255,.10);
-  --border-outer:rgba(0,0,0,.52);
-  --border-inner:rgba(255,255,255,.15);
-  --hairline:rgba(255,255,255,.09);
-  --dock-bg:rgba(28,30,38,.44);
-  --dock-border:rgba(255,255,255,.18);
-  --popover-bg:rgba(36,38,46,.82);
-  --input-bg:rgba(0,0,0,.28);
-  --shadow-active:0 28px 80px rgba(0,0,0,.58),0 8px 24px rgba(0,0,0,.35);
-  --shadow-inactive:0 12px 36px rgba(0,0,0,.32);
+  --win-bg:rgba(28,31,40,.54);
+  --win-body:rgba(20,22,30,.52);
+  --sidebar-bg:rgba(255,255,255,.06);
+  --toolbar-bg:rgba(255,255,255,.07);
+  --card-bg:rgba(255,255,255,.08);
+  --card-hover:rgba(255,255,255,.14);
+  --border-outer:rgba(0,0,0,.42);
+  --border-inner:rgba(255,255,255,.32);
+  --hairline:rgba(255,255,255,.12);
+  --dock-bg:linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.08) 54%,rgba(255,255,255,.14) 100%);
+  --dock-border:rgba(255,255,255,.38);
+  --popover-bg:rgba(30,33,44,.64);
+  --input-bg:rgba(0,0,0,.24);
+  --shadow-active:0 28px 80px rgba(0,0,0,.52),0 8px 24px rgba(0,0,0,.32);
+  --shadow-inactive:0 14px 40px rgba(0,0,0,.28);
 }
 
 html[data-theme="light"]{
   --text:#1d1d1f;
-  --text-2:rgba(29,29,31,.66);
-  --text-3:rgba(29,29,31,.42);
-  --menubar-bg:rgba(255,255,255,.52);
-  --menubar-border:rgba(0,0,0,.07);
+  --text-2:rgba(29,29,31,.68);
+  --text-3:rgba(29,29,31,.45);
+  --menubar-bg:linear-gradient(180deg,rgba(255,255,255,.52),rgba(255,255,255,.32));
+  --menubar-border:rgba(255,255,255,.65);
   --menubar-text:#1d1d1f;
-  --win-bg:rgba(250,250,252,.82);
-  --win-body:rgba(255,255,255,.78);
-  --sidebar-bg:rgba(238,240,245,.62);
-  --toolbar-bg:rgba(246,247,250,.72);
-  --card-bg:rgba(0,0,0,.035);
-  --card-hover:rgba(0,0,0,.065);
-  --border-outer:rgba(0,0,0,.16);
-  --border-inner:rgba(255,255,255,.75);
-  --hairline:rgba(0,0,0,.08);
-  --dock-bg:rgba(255,255,255,.42);
-  --dock-border:rgba(255,255,255,.55);
-  --popover-bg:rgba(248,249,252,.86);
+  --win-bg:rgba(255,255,255,.62);
+  --win-body:rgba(255,255,255,.56);
+  --sidebar-bg:rgba(255,255,255,.32);
+  --toolbar-bg:rgba(255,255,255,.38);
+  --card-bg:rgba(255,255,255,.42);
+  --card-hover:rgba(255,255,255,.62);
+  --border-outer:rgba(0,0,0,.14);
+  --border-inner:rgba(255,255,255,.85);
+  --hairline:rgba(0,0,0,.09);
+  --dock-bg:linear-gradient(180deg,rgba(255,255,255,.58) 0%,rgba(255,255,255,.26) 55%,rgba(255,255,255,.44) 100%);
+  --dock-border:rgba(255,255,255,.80);
+  --popover-bg:rgba(255,255,255,.68);
   --input-bg:rgba(0,0,0,.055);
-  --shadow-active:0 26px 70px rgba(0,0,0,.24),0 6px 20px rgba(0,0,0,.12);
-  --shadow-inactive:0 10px 30px rgba(0,0,0,.12);
+  --shadow-active:0 26px 70px rgba(0,0,0,.20),0 6px 20px rgba(0,0,0,.10);
+  --shadow-inactive:0 12px 32px rgba(0,0,0,.10);
 }
 
 *{box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
@@ -98,26 +98,39 @@ button{cursor:default}
 .boot-skip{position:absolute;bottom:28px;font-size:12px;color:rgba(255,255,255,.45);background:transparent;border:0;cursor:pointer}
 .boot-skip:hover{color:rgba(255,255,255,.8)}
 
-/* ========== MENU BAR ========== */
+/* ========== MENU BAR (LIQUID GLASS) ========== */
 #menubar{
   position:absolute;top:0;left:0;right:0;height:var(--menubar-h);z-index:10000;
   display:flex;align-items:center;padding:0 10px;
   background:var(--menubar-bg);
-  backdrop-filter:blur(32px) saturate(185%);-webkit-backdrop-filter:blur(32px) saturate(185%);
+  backdrop-filter:blur(24px) saturate(210%) brightness(1.06);-webkit-backdrop-filter:blur(24px) saturate(210%) brightness(1.06);
   border-bottom:1px solid var(--menubar-border);
+  box-shadow:inset 0 -0.5px 0 rgba(255,255,255,.2),0 2px 12px rgba(0,0,0,.08);
   color:var(--menubar-text);font-size:13px;font-weight:500;
 }
 .mb-left,.mb-right{display:flex;align-items:center;height:100%}
-.mb-right{margin-left:auto;gap:2px}
+.mb-right{margin-left:auto;gap:3px}
 .mb-item{
-  height:22px;padding:0 9px;border-radius:5px;border:0;background:transparent;
+  height:22px;padding:0 9px;border-radius:6px;border:0;background:transparent;
   display:inline-flex;align-items:center;gap:5px;font-size:13px;white-space:nowrap;
-  transition:background .1s;
+  transition:background .12s;
 }
-.mb-item:hover,.mb-item.open{background:rgba(128,128,128,.22)}
+.mb-item:hover,.mb-item.open{background:rgba(255,255,255,.2)}
 .mb-appname{font-weight:700;padding:0 10px}
 .mb-icon-btn{padding:0 7px}
 #mb-clock{font-variant-numeric:tabular-nums;font-size:12.5px;padding:0 8px}
+#mb-music-pill{
+  height:21px;padding:0 9px;border-radius:99px;border:1px solid var(--dock-border);
+  background:rgba(255,255,255,.14);backdrop-filter:blur(14px) saturate(190%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
+  display:inline-flex;align-items:center;gap:6px;font-size:11.5px;max-width:210px;cursor:pointer;
+  transition:background .15s,transform .12s;margin-right:4px;
+}
+#mb-music-pill:hover{background:rgba(255,255,255,.24)}
+#mb-music-pill .pill-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mb-music-pill .pill-dot{width:6px;height:6px;border-radius:50%;background:#ff375f;flex:none}
+#mb-music-pill.playing .pill-dot{background:#30d158;box-shadow:0 0 8px #30d158;animation:pulseDot 1.4s infinite}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.75)}}
 
 /* ========== DROPDOWN MENUS & POPOVERS ========== */
 .mac-menu{
@@ -141,13 +154,13 @@ button{cursor:default}
 .mac-menu-btn .kbd{font-size:11.5px;color:var(--text-3);font-family:var(--font)}
 .mac-sep{height:1px;background:var(--hairline);margin:4px 8px}
 
-/* Control Center */
+/* Control Center (Liquid Glass) */
 #control-center{
-  position:absolute;top:34px;right:10px;z-index:29000;width:316px;padding:12px;
-  border-radius:16px;background:var(--popover-bg);
-  backdrop-filter:blur(44px) saturate(190%);-webkit-backdrop-filter:blur(44px) saturate(190%);
+  position:absolute;top:34px;right:10px;z-index:29000;width:320px;padding:12px;
+  border-radius:18px;background:var(--popover-bg);
+  backdrop-filter:blur(28px) saturate(215%) brightness(1.06);-webkit-backdrop-filter:blur(28px) saturate(215%) brightness(1.06);
   border:1px solid var(--border-inner);
-  box-shadow:0 20px 55px rgba(0,0,0,.42),0 0 0 .5px var(--border-outer);
+  box-shadow:0 22px 58px rgba(0,0,0,.44),inset 0 1px 1px rgba(255,255,255,.45),0 0 0 .5px var(--border-outer);
   display:none;flex-direction:column;gap:10px;
   animation:popIn .14s cubic-bezier(.2,.8,.2,1);
 }
@@ -181,12 +194,12 @@ button{cursor:default}
   box-shadow:0 1px 5px rgba(0,0,0,.35);
 }
 
-/* Notification / Date Widget */
+/* Notification / Date Widget (Liquid Glass) */
 #notif-center{
   position:absolute;top:34px;right:10px;z-index:29000;width:300px;padding:14px;
-  border-radius:16px;background:var(--popover-bg);
-  backdrop-filter:blur(44px) saturate(190%);-webkit-backdrop-filter:blur(44px) saturate(190%);
-  border:1px solid var(--border-inner);box-shadow:0 20px 55px rgba(0,0,0,.42);
+  border-radius:18px;background:var(--popover-bg);
+  backdrop-filter:blur(28px) saturate(215%) brightness(1.06);-webkit-backdrop-filter:blur(28px) saturate(215%) brightness(1.06);
+  border:1px solid var(--border-inner);box-shadow:0 22px 58px rgba(0,0,0,.44),inset 0 1px 1px rgba(255,255,255,.45);
   display:none;flex-direction:column;gap:12px;animation:popIn .14s ease;
 }
 #notif-center.show{display:flex}
@@ -208,19 +221,38 @@ button{cursor:default}
 .desk-item.selected .icon-box{background:rgba(255,255,255,.16);border-radius:12px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
 .desk-item.selected .desk-label{background:var(--accent);text-shadow:none}
 
-/* ========== DOCK ========== */
+/* ========== DOCK (APPLE LIQUID GLASS) ========== */
 #dock-container{
-  position:absolute;left:0;right:0;bottom:8px;z-index:9500;
+  position:absolute;left:0;right:0;bottom:10px;z-index:9500;
   display:flex;justify-content:center;pointer-events:none;
 }
 #dock{
-  pointer-events:auto;
-  display:flex;align-items:flex-end;gap:6px;padding:6px 10px 7px;
-  border-radius:20px;background:var(--dock-bg);
-  backdrop-filter:blur(36px) saturate(185%);-webkit-backdrop-filter:blur(36px) saturate(185%);
+  pointer-events:auto;position:relative;
+  display:flex;align-items:flex-end;gap:7px;padding:7px 12px 8px;
+  border-radius:24px;
+  background:var(--dock-bg);
+  backdrop-filter:blur(22px) saturate(215%) brightness(1.08);
+  -webkit-backdrop-filter:blur(22px) saturate(215%) brightness(1.08);
   border:1px solid var(--dock-border);
-  box-shadow:0 16px 45px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.28);
-  height:66px;
+  box-shadow:
+    0 22px 54px rgba(0,0,0,.44),
+    0 4px 14px rgba(0,0,0,.22),
+    inset 0 1.5px 1px rgba(255,255,255,.68),
+    inset 0 -1.5px 2px rgba(255,255,255,.22),
+    inset 0 0 22px rgba(255,255,255,.08);
+  height:68px;
+}
+#dock::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(105deg,rgba(140,220,255,.16) 0%,rgba(255,255,255,.26) 24%,transparent 52%,rgba(235,170,255,.15) 85%,rgba(255,255,255,.22) 100%);
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;-webkit-mask-composite:xor;
+  padding:1px;opacity:.85;
+}
+#dock::after{
+  content:"";position:absolute;left:14px;right:14px;top:2px;height:14px;border-radius:99px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.32),rgba(255,255,255,0));
 }
 .dock-item{
   position:relative;width:50px;height:50px;border:0;padding:0;background:transparent;
@@ -252,16 +284,16 @@ button{cursor:default}
 .window{
   position:absolute;pointer-events:auto;
   min-width:300px;min-height:200px;
-  border-radius:var(--radius-win);
+  border-radius:16px;
   background:var(--win-bg);
-  backdrop-filter:blur(46px) saturate(180%);-webkit-backdrop-filter:blur(46px) saturate(180%);
-  box-shadow:var(--shadow-inactive),inset 0 0 0 1px var(--border-inner),0 0 0 .5px var(--border-outer);
+  backdrop-filter:blur(32px) saturate(210%) brightness(1.04);-webkit-backdrop-filter:blur(32px) saturate(210%) brightness(1.04);
+  box-shadow:var(--shadow-inactive),inset 0 1px 1px rgba(255,255,255,.42),inset 0 0 0 1px var(--border-inner),0 0 0 .5px var(--border-outer);
   overflow:hidden;display:flex;flex-direction:column;
   transition:opacity .18s ease,transform .2s cubic-bezier(.22,1,.36,1),box-shadow .18s ease;
   animation:winOpen .2s cubic-bezier(.22,1,.36,1);
 }
 .window.active-win{
-  box-shadow:var(--shadow-active),inset 0 0 0 1px var(--border-inner),0 0 0 .5px var(--border-outer);
+  box-shadow:var(--shadow-active),inset 0 1px 1.5px rgba(255,255,255,.52),inset 0 0 0 1px var(--border-inner),0 0 0 .5px var(--border-outer);
 }
 @keyframes winOpen{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:none}}
 .window.minimized{opacity:0;transform:scale(.75) translateY(140px);pointer-events:none}
@@ -442,16 +474,66 @@ button{cursor:default}
 .notes-meta{font-size:11px;color:var(--text-3);margin-top:3px}
 .notes-editor{flex:1;border:0;background:transparent;outline:none;resize:none;padding:18px 26px;font-size:14px;line-height:1.75;user-select:text}
 
-/* ========== APP: MUSIC ========== */
-.music-disc{
-  width:118px;height:118px;border-radius:20px;margin:0 auto 14px;
-  display:grid;place-items:center;box-shadow:0 16px 36px rgba(0,0,0,.35);
-  position:relative;overflow:hidden;
+/* ========== APP: MUSIC (JAY CHOU + LIQUID GLASS LYRICS) ========== */
+.music-shell{
+  display:grid;grid-template-columns:285px 1fr;height:100%;width:100%;
+  background:radial-gradient(circle at 18% 22%,rgba(250,45,72,.22),transparent 55%),radial-gradient(circle at 85% 80%,rgba(255,159,10,.14),transparent 52%);
 }
-.music-disc.playing{animation:pulseGlow 2.4s ease-in-out infinite alternate}
-@keyframes pulseGlow{from{transform:scale(1)}to{transform:scale(1.035)}}
-.eq-bars{display:flex;align-items:flex-end;gap:3px;height:18px}
-.eq-bar{width:3px;border-radius:2px;background:#fff;height:4px;transition:height .15s}
+.music-left{
+  padding:20px;border-right:1px solid var(--hairline);
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:12px;
+  background:rgba(255,255,255,.03);
+}
+.music-cover{
+  width:196px;height:196px;border-radius:18px;overflow:hidden;position:relative;
+  box-shadow:0 22px 48px rgba(0,0,0,.46),inset 0 1px 1px rgba(255,255,255,.4);
+  transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .45s ease;
+}
+.music-cover.playing{transform:scale(1.035);box-shadow:0 28px 60px rgba(250,45,72,.35),inset 0 1px 1px rgba(255,255,255,.45)}
+.music-eq{position:absolute;bottom:10px;right:10px;display:flex;align-items:flex-end;gap:3px;height:18px;padding:4px 6px;border-radius:8px;background:rgba(0,0,0,.35);backdrop-filter:blur(10px)}
+.eq-bar{width:3px;border-radius:2px;background:#fff;height:4px;transition:height .14s}
+.music-scrubber{width:100%;display:flex;flex-direction:column;gap:4px}
+.music-range{
+  -webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:99px;
+  background:rgba(128,128,128,.35);outline:none;cursor:pointer;
+}
+.music-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 4px rgba(0,0,0,.4);
+}
+.music-ctrl-row{display:flex;align-items:center;justify-content:center;gap:14px}
+.music-play-circle{
+  width:46px;height:46px;border-radius:50%;border:0;background:linear-gradient(180deg,#ff4d6d,#fa233b);color:#fff;
+  display:grid;place-items:center;font-size:17px;cursor:pointer;
+  box-shadow:0 8px 22px rgba(250,35,59,.42),inset 0 1px 1px rgba(255,255,255,.45);
+  transition:transform .12s;
+}
+.music-play-circle:hover{transform:scale(1.06)}
+.music-right{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.music-lyrics{
+  flex:1;overflow:auto;padding:36px 26px 90px;display:flex;flex-direction:column;gap:14px;
+  scroll-behavior:smooth;mask-image:linear-gradient(180deg,transparent 0%,#000 12%,#000 84%,transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 12%,#000 84%,transparent 100%);
+}
+.lrc-line{
+  font-size:17px;font-weight:600;line-height:1.45;color:var(--text);opacity:.32;
+  filter:blur(.55px);transform-origin:left center;cursor:pointer;
+  transition:opacity .28s,transform .28s,filter .28s,color .28s;
+}
+.lrc-line:hover{opacity:.75;filter:none}
+.lrc-line.active{
+  opacity:1;filter:none;font-size:21px;font-weight:700;transform:scale(1.02);
+  text-shadow:0 2px 18px rgba(255,255,255,.22);
+}
+.music-track-tabs{
+  display:flex;gap:6px;padding:10px 16px;border-bottom:1px solid var(--hairline);overflow-x:auto;flex:none;
+}
+.music-tab{
+  padding:4px 10px;border-radius:99px;border:1px solid var(--hairline);background:var(--card-bg);
+  font-size:11.5px;white-space:nowrap;cursor:pointer;
+}
+.music-tab.active{background:var(--accent);color:#fff;border-color:transparent}
+@media(max-width:720px){.music-shell{grid-template-columns:1fr;overflow:auto}.music-left{border-right:0;border-bottom:1px solid var(--hairline)}}
 
 /* ========== SPOTLIGHT ========== */
 #spotlight-backdrop{
@@ -586,6 +668,10 @@ button{cursor:default}
       <button class="mb-item mb-hide-sm" onclick="openApp('about')">帮助</button>
     </div>
     <div class="mb-right">
+      <button id="mb-music-pill" onclick="openApp('music')" title="点击打开 XXUUS Music">
+        <span class="pill-dot"></span>
+        <span class="pill-text" id="mb-pill-text">红尘客栈 · 周杰伦</span>
+      </button>
       <button class="mb-item mb-icon-btn mb-hide-sm" title="Wi-Fi 已连接">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
       </button>
@@ -650,8 +736,8 @@ button{cursor:default}
       </div>
     </div>
     <div class="cc-card" style="flex-direction:row;align-items:center;justify-content:space-between">
-      <div><div class="cc-label" id="cc-music-title">星空 Lo-Fi</div><div class="cc-sub" id="cc-music-status">本地离线音频合成</div></div>
-      <button class="btn-mac btn-primary" onclick="toggleAmbientMusic()" id="cc-music-btn">播放</button>
+      <div style="min-width:0;padding-right:8px"><div class="cc-label" id="cc-music-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">红尘客栈 · 周杰伦</div><div class="cc-sub" id="cc-music-status" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">点击播放 · 同步歌词</div></div>
+      <button class="btn-mac btn-primary" onclick="toggleMusicPlay()" id="cc-music-btn">播放</button>
     </div>
   </div>
 
@@ -721,7 +807,7 @@ const APPS = [
   {id:'notes',     name:'备忘录',   title:'备忘录',     w:760, h:500, dock:true},
   {id:'calendar',  name:'日历',     title:'日历',       w:780, h:540, dock:true},
   {id:'photos',    name:'照片',     title:'照片',       w:780, h:520, dock:true},
-  {id:'music',     name:'音乐',     title:'XXUUS Music', w:640, h:460, dock:true},
+  {id:'music',     name:'音乐',     title:'XXUUS Music', w:780, h:530, dock:true},
   {id:'portfolio', name:'作品集',   title:'个人作品集', w:820, h:540, dock:true},
   {id:'lab',       name:'AI 实验室',title:'AI 实验室',  w:800, h:520, dock:true},
   {id:'terminal',  name:'终端',     title:'终端 — zsh', w:680, h:430, dock:true},
@@ -736,6 +822,47 @@ const WALLPAPERS = [
   {name:'大瑟尔流体', bg:'linear-gradient(135deg,#0d1b3e 0%,#1f3e7a 35%,#73377a 70%,#c95149 100%)', lightBg:'linear-gradient(135deg,#4f89e8 0%,#73a7f5 35%,#d17cb8 70%,#f59b6e 100%)', type:'waves'},
   {name:'深空星云', bg:'radial-gradient(ellipse at 30% 25%,rgba(52,120,246,.32),transparent 50%),radial-gradient(ellipse at 75% 70%,rgba(191,90,242,.28),transparent 50%),#070912', lightBg:'radial-gradient(ellipse at 30% 25%,rgba(52,120,246,.22),transparent 50%),radial-gradient(ellipse at 75% 70%,rgba(191,90,242,.22),transparent 50%),#162238', type:'stars'}
 ];
+
+const JAY_LRC_TEXT = `[00:00.00]红尘客栈 - 周杰伦 (Jay Chou)
+[00:05.54]词：方文山
+[00:11.10]曲：周杰伦
+[00:16.67]编曲：黄雨勋
+[00:22.23]天涯的尽头是风沙
+[00:27.50]红尘的故事叫牵挂
+[00:32.84]封刀隐没在寻常人家 东篱下
+[00:38.46]闲云野鹤古刹
+[00:43.38]快马在江湖里厮杀
+[00:48.81]无非是名跟利放不下
+[00:54.10]心中有江山的人岂能快意潇洒
+[00:59.82]我只求与你共华发
+[01:07.21]剑出鞘恩怨了 谁笑
+[01:11.84]我只求今朝拥你 入怀抱
+[01:17.12]红尘客栈风似刀 骤雨落宿命敲
+[01:26.48]任武林谁领风骚
+[01:28.82]我却只为你折腰
+[01:33.14]过荒村野桥寻世外古道
+[01:38.46]远离人间尘嚣
+[01:41.09]柳絮飘执子之手逍遥
+[02:06.07]檐下窗棂斜映枝桠
+[02:11.40]与你席地对座饮茶
+[02:16.75]我以工笔画将你牢牢的记下
+[02:22.49]提笔不为风雅
+[02:27.50]灯下叹红颜近晚霞
+[02:32.45]我说缘份一如参禅不说话
+[02:38.03]你泪如梨花洒满了纸上的天下
+[02:43.81]爱恨如写意山水画
+[02:51.13]剑出鞘恩怨了 谁笑
+[02:55.80]我只求今朝拥你入怀抱
+[03:01.13]红尘客栈风似刀 骤雨落宿命敲
+[03:10.53]任武林谁领风骚
+[03:12.84]我却只为你折腰
+[03:17.18]过荒村野桥寻世外古道
+[03:22.55]远离人间尘嚣
+[03:25.15]柳絮飘执子之手逍遥
+[03:47.81]任武林谁领风骚
+[03:50.13]我却只为你折腰
+[03:54.45]你回眸多娇我泪中带笑
+[03:59.83]酒招旗风中萧萧 剑出鞘恩怨了`;
 
 const VFS = {
   desktop: [
@@ -755,7 +882,9 @@ const VFS = {
     {name:'AI 创意实验', kind:'app', target:'lab', size:'AI'}
   ],
   downloads: [
-    {name:'xxuus-os-v2.html', kind:'file', size:'单文件离线版', content:'这就是你正在运行的 XXUUS OS v2.0 离线旗舰原型！'}
+    {name:'红尘客栈-周杰伦.mp3', kind:'app', target:'music', size:'10.9 MB'},
+    {name:'红尘客栈-周杰伦.lrc', kind:'file', size:'1.5 KB', content:JAY_LRC_TEXT},
+    {name:'index.html', kind:'file', size:'单文件离线版', content:'这就是你正在运行的 XXUUS OS Liquid Glass 旗舰版！'}
   ],
   trash: [
     {name:'旧版粗糙原型_v1.html', kind:'file', size:'31 KB', content:'已淘汰的初版 Emoji 风格原型，被优雅的 macOS 2.0 取代。'}
@@ -790,8 +919,39 @@ const STATE = {
   musicTrack: 0
 };
 
-/* ===================== MACOS SQUIRCLE SVG ICONS ===================== */
+/* ===================== MACOS 27 LIQUID GLASS SQUIRCLE ICONS ===================== */
 let _iconUid = 0;
+function makeGearPath(cx, cy, rOuter, rInner, teeth){
+  let d = '';
+  const step = (Math.PI * 2) / teeth;
+  for(let i = 0; i < teeth; i++){
+    const a0 = i * step;
+    const a1 = a0 + step * 0.18;
+    const a2 = a0 + step * 0.34;
+    const a3 = a0 + step * 0.66;
+    const a4 = a0 + step * 0.82;
+    const pts = [
+      [cx + Math.cos(a0)*rInner, cy + Math.sin(a0)*rInner],
+      [cx + Math.cos(a1)*rInner, cy + Math.sin(a1)*rInner],
+      [cx + Math.cos(a2)*rOuter, cy + Math.sin(a2)*rOuter],
+      [cx + Math.cos(a3)*rOuter, cy + Math.sin(a3)*rOuter],
+      [cx + Math.cos(a4)*rInner, cy + Math.sin(a4)*rInner]
+    ];
+    pts.forEach((p, idx)=>{ d += (i===0 && idx===0 ? 'M' : 'L') + p[0].toFixed(2) + ' ' + p[1].toFixed(2) + ' '; });
+  }
+  return d + 'Z';
+}
+function makeSafariTicks(){
+  let s = '';
+  for(let i=0;i<60;i++){
+    const a = (i * 6) * Math.PI / 180;
+    const major = i % 5 === 0;
+    const r1 = major ? 18.2 : 19.6;
+    const r2 = 21.6;
+    s += `<line x1="${(32+Math.cos(a)*r1).toFixed(2)}" y1="${(32+Math.sin(a)*r1).toFixed(2)}" x2="${(32+Math.cos(a)*r2).toFixed(2)}" y2="${(32+Math.sin(a)*r2).toFixed(2)}" stroke="#fff" stroke-opacity="${major?'.85':'.42'}" stroke-width="${major?'1.1':'0.65'}" stroke-linecap="round"/>`;
+  }
+  return s;
+}
 function getAppIconSVG(id, size=48){
   const u = ++_iconUid;
   const now = new Date();
@@ -799,102 +959,132 @@ function getAppIconSVG(id, size=48){
   const icons = {
     finder: `
       <defs>
-        <linearGradient id="fL-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#58b8ff"/><stop offset="100%" stop-color="#146ef5"/></linearGradient>
-        <linearGradient id="fR-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f8fbff"/><stop offset="100%" stop-color="#dce6f7"/></linearGradient>
+        <linearGradient id="fL-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#69ccff"/><stop offset="55%" stop-color="#2286ff"/><stop offset="100%" stop-color="#0b57d0"/></linearGradient>
+        <linearGradient id="fR-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dce4f2"/></linearGradient>
+        <linearGradient id="fSh-${u}" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0a2540" stop-opacity=".22"/><stop offset="100%" stop-color="#0a2540" stop-opacity="0"/></linearGradient>
       </defs>
       <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#fR-${u})"/>
-      <path d="M17 3H34C30 19 29 29 34 38H24L27 61H17C9.3 61 3 54.7 3 47V17C3 9.3 9.3 3 17 3Z" fill="url(#fL-${u})"/>
-      <path d="M34 3C30 19 29 29 34 38H24L27 61" fill="none" stroke="#1b4d9e" stroke-opacity=".22" stroke-width="1.5"/>
-      <line x1="20" y1="20" x2="20" y2="27" stroke="#182a4a" stroke-width="3.2" stroke-linecap="round"/>
-      <line x1="44" y1="20" x2="44" y2="27" stroke="#182a4a" stroke-width="3.2" stroke-linecap="round"/>
-      <path d="M19 42C24.5 48.5 39.5 48.5 45 42" fill="none" stroke="#182a4a" stroke-width="3.2" stroke-linecap="round"/>`,
+      <path d="M17 3H34.5C30.2 18.5 29.2 28.5 34.2 38H24.5L27.5 61H17C9.3 61 3 54.7 3 47V17C3 9.3 9.3 3 17 3Z" fill="url(#fL-${u})"/>
+      <path d="M34.5 3C30.2 18.5 29.2 28.5 34.2 38H24.5L27.5 61H32L29 39.5H37.5C32.5 29.5 33.5 18.5 37.5 3Z" fill="url(#fSh-${u})"/>
+      <rect x="19" y="19.5" width="3.2" height="7.5" rx="1.6" fill="#17243b"/>
+      <rect x="42.5" y="19.5" width="3.2" height="7.5" rx="1.6" fill="#17243b"/>
+      <path d="M17.5 41.5C24 49.5 40 49.5 46.5 41.5" fill="none" stroke="#17243b" stroke-width="3.2" stroke-linecap="round"/>`,
     safari: `
       <defs>
-        <linearGradient id="sfB-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e5e9f0"/></linearGradient>
-        <radialGradient id="sfD-${u}" cx="50%" cy="35%" r="65%"><stop offset="0%" stop-color="#5bc8ff"/><stop offset="100%" stop-color="#0b66e4"/></radialGradient>
+        <linearGradient id="sfB-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e3e7ee"/></linearGradient>
+        <radialGradient id="sfD-${u}" cx="50%" cy="32%" r="68%"><stop offset="0%" stop-color="#5cd4ff"/><stop offset="55%" stop-color="#1588ff"/><stop offset="100%" stop-color="#074bb8"/></radialGradient>
       </defs>
       <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#sfB-${u})"/>
-      <circle cx="32" cy="32" r="22.5" fill="url(#sfD-${u})"/>
-      <circle cx="32" cy="32" r="20" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1" stroke-dasharray="2 3.2"/>
-      <polygon points="32,32 43,19 36,36" fill="#ff3b30"/>
-      <polygon points="32,32 21,45 28,28" fill="#ffffff"/>
-      <circle cx="32" cy="32" r="2.2" fill="#e5e9f0"/>`,
+      <circle cx="32" cy="32" r="23.5" fill="#d4dae4"/>
+      <circle cx="32" cy="32" r="22.4" fill="url(#sfD-${u})"/>
+      ${makeSafariTicks()}
+      <g transform="translate(1,1.5)" opacity=".22"><polygon points="32,32 43.5,18.5 36.2,36.2 20.5,45.5 27.8,27.8" fill="#000"/></g>
+      <polygon points="32,32 43.5,18.5 36.2,36.2" fill="#ff3b30"/>
+      <polygon points="32,32 43.5,18.5 27.8,27.8" fill="#ff6961"/>
+      <polygon points="32,32 20.5,45.5 27.8,27.8" fill="#ffffff"/>
+      <polygon points="32,32 20.5,45.5 36.2,36.2" fill="#d8dee9"/>
+      <circle cx="32" cy="32" r="2.1" fill="#e5e7eb" stroke="#9ca3af" stroke-width=".6"/>`,
     notes: `
-      <defs><linearGradient id="ntY-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffd60a"/><stop offset="100%" stop-color="#f5a600"/></linearGradient></defs>
-      <rect x="3" y="3" width="58" height="58" rx="14" fill="#ffffff"/>
+      <defs>
+        <linearGradient id="ntY-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe14d"/><stop offset="55%" stop-color="#ffca08"/><stop offset="100%" stop-color="#e59c00"/></linearGradient>
+        <linearGradient id="ntP-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f5f4ef"/></linearGradient>
+      </defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#ntP-${u})"/>
       <path d="M3 17C3 9.3 9.3 3 17 3H47C54.7 3 61 9.3 61 17V20H3V17Z" fill="url(#ntY-${u})"/>
-      <line x1="3" y1="22.5" x2="61" y2="22.5" stroke="#d1d5db" stroke-width="1" stroke-dasharray="2 2"/>
-      <line x1="11" y1="31" x2="53" y2="31" stroke="#e5e7eb" stroke-width="1.5"/>
-      <line x1="11" y1="40" x2="53" y2="40" stroke="#e5e7eb" stroke-width="1.5"/>
-      <line x1="11" y1="49" x2="42" y2="49" stroke="#e5e7eb" stroke-width="1.5"/>`,
+      <rect x="3" y="20" width="58" height="2" fill="#000" fill-opacity=".08"/>
+      <line x1="6" y1="24" x2="58" y2="24" stroke="#d4d4d8" stroke-width="1" stroke-dasharray="1.5 2.5"/>
+      <line x1="9" y1="33" x2="55" y2="33" stroke="#e4e4e7" stroke-width="1.4"/>
+      <line x1="9" y1="42" x2="55" y2="42" stroke="#e4e4e7" stroke-width="1.4"/>
+      <line x1="9" y1="51" x2="43" y2="51" stroke="#e4e4e7" stroke-width="1.4"/>`,
     calendar: `
+      <defs><linearGradient id="calR-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff5449"/><stop offset="100%" stop-color="#d70015"/></linearGradient></defs>
       <rect x="3" y="3" width="58" height="58" rx="14" fill="#ffffff"/>
-      <path d="M3 17C3 9.3 9.3 3 17 3H47C54.7 3 61 9.3 61 17V21H3V17Z" fill="#ff3b30"/>
-      <text x="32" y="15.5" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="700" font-family="-apple-system,sans-serif">${weekdays[now.getDay()]}</text>
-      <text x="32" y="49" text-anchor="middle" fill="#1d1d1f" font-size="27" font-weight="600" font-family="-apple-system,sans-serif">${now.getDate()}</text>`,
+      <path d="M3 17C3 9.3 9.3 3 17 3H47C54.7 3 61 9.3 61 17V21.5H3V17Z" fill="url(#calR-${u})"/>
+      <text x="32" y="16" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="700" letter-spacing=".5" font-family="-apple-system,sans-serif">${weekdays[now.getDay()]}</text>
+      <text x="32" y="50" text-anchor="middle" fill="#1d1d1f" font-size="28" font-weight="600" letter-spacing="-1" font-family="-apple-system,sans-serif">${now.getDate()}</text>`,
     photos: `
       <rect x="3" y="3" width="58" height="58" rx="14" fill="#ffffff"/>
       <g transform="translate(32 32)">
-        <ellipse rx="5.5" ry="12" transform="translate(0 -11)" fill="#ff3b30" opacity=".85"/>
-        <ellipse rx="5.5" ry="12" transform="rotate(45) translate(0 -11)" fill="#ff9500" opacity=".85"/>
-        <ellipse rx="5.5" ry="12" transform="rotate(90) translate(0 -11)" fill="#ffcc00" opacity=".85"/>
-        <ellipse rx="5.5" ry="12" transform="rotate(135) translate(0 -11)" fill="#34c759" opacity=".85"/>
-        <ellipse rx="5.5" ry="12" transform="rotate(180) translate(0 -11)" fill="#30b0c7" opacity=".85"/>
-        <ellipse rx="5.5" ry="12" transform="rotate(225) translate(0 -11)" fill="#007aff" opacity=".85"/>
-        <ellipse rx="5.5" ry="12" transform="rotate(270) translate(0 -11)" fill="#5856d6" opacity=".85"/>
-        <ellipse rx="5.5" ry="12" transform="rotate(315) translate(0 -11)" fill="#af52de" opacity=".85"/>
+        <rect x="-5" y="-22" width="10" height="19" rx="5" fill="#ff3b30" fill-opacity=".86"/>
+        <rect x="-5" y="-22" width="10" height="19" rx="5" transform="rotate(45)" fill="#ff9500" fill-opacity=".86"/>
+        <rect x="-5" y="-22" width="10" height="19" rx="5" transform="rotate(90)" fill="#ffcc00" fill-opacity=".88"/>
+        <rect x="-5" y="-22" width="10" height="19" rx="5" transform="rotate(135)" fill="#34c759" fill-opacity=".86"/>
+        <rect x="-5" y="-22" width="10" height="19" rx="5" transform="rotate(180)" fill="#30b0c7" fill-opacity=".86"/>
+        <rect x="-5" y="-22" width="10" height="19" rx="5" transform="rotate(225)" fill="#007aff" fill-opacity=".86"/>
+        <rect x="-5" y="-22" width="10" height="19" rx="5" transform="rotate(270)" fill="#5856d6" fill-opacity=".86"/>
+        <rect x="-5" y="-22" width="10" height="19" rx="5" transform="rotate(315)" fill="#af52de" fill-opacity=".86"/>
+        <circle r="3.5" fill="#fff" fill-opacity=".9"/>
       </g>`,
     music: `
-      <defs><linearGradient id="mu-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff5e7e"/><stop offset="100%" stop-color="#fa233b"/></linearGradient></defs>
+      <defs>
+        <linearGradient id="mu-${u}" x1="0" y1="0" x2=".9" y2="1"><stop offset="0%" stop-color="#ff6b86"/><stop offset="50%" stop-color="#fa2d48"/><stop offset="100%" stop-color="#d6002f"/></linearGradient>
+      </defs>
       <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#mu-${u})"/>
-      <path d="M25 42V20L46 15.5V37.5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="21" cy="43.5" r="5.5" fill="#fff"/>
-      <circle cx="42" cy="39" r="5.5" fill="#fff"/>`,
+      <g transform="translate(0,1)" opacity=".22"><path d="M25 43V19.5L46.5 14.5V38" fill="none" stroke="#000" stroke-width="4.2" stroke-linecap="round"/><circle cx="20.5" cy="43.5" r="5.5" fill="#000"/><circle cx="42" cy="38.5" r="5.5" fill="#000"/></g>
+      <path d="M25 42V19L46.5 14.2V37" fill="none" stroke="#fff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M25 19L46.5 14.2V20L25 24.8Z" fill="#fff"/>
+      <ellipse cx="20.2" cy="43" rx="5.8" ry="4.6" transform="rotate(-18 20.2 43)" fill="#fff"/>
+      <ellipse cx="41.8" cy="38" rx="5.8" ry="4.6" transform="rotate(-18 41.8 38)" fill="#fff"/>`,
     terminal: `
-      <defs><linearGradient id="tm-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#484a52"/><stop offset="100%" stop-color="#22242a"/></linearGradient></defs>
-      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#tm-${u})"/>
-      <rect x="7.5" y="7.5" width="49" height="49" rx="10" fill="#111318"/>
-      <path d="M16 21L25 27.5L16 34" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
-      <line x1="28" y1="34" x2="39" y2="34" stroke="#30d158" stroke-width="3.2" stroke-linecap="round"/>`,
+      <defs>
+        <linearGradient id="tmFrame-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f2f3f5"/><stop offset="55%" stop-color="#b4b9c2"/><stop offset="100%" stop-color="#7c828c"/></linearGradient>
+        <linearGradient id="tmSc-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22252b"/><stop offset="100%" stop-color="#0b0c10"/></linearGradient>
+      </defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#tmFrame-${u})"/>
+      <rect x="6.5" y="6.5" width="51" height="51" rx="10.5" fill="url(#tmSc-${u})" stroke="#000" stroke-opacity=".35" stroke-width="1"/>
+      <path d="M14.5 19.5L23.5 25.5L14.5 31.5" fill="none" stroke="#f8fafc" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="26" y1="31.5" x2="36.5" y2="31.5" stroke="#f8fafc" stroke-width="3.2" stroke-linecap="round"/>`,
     calculator: `
-      <rect x="3" y="3" width="58" height="58" rx="14" fill="#2c2c2e"/>
-      <rect x="10" y="10" width="44" height="12" rx="3" fill="#1c1c1e"/>
-      <circle cx="15" cy="30" r="4" fill="#636366"/><circle cx="26" cy="30" r="4" fill="#636366"/><circle cx="37" cy="30" r="4" fill="#636366"/><circle cx="49" cy="30" r="4" fill="#ff9f0a"/>
-      <circle cx="15" cy="40" r="4" fill="#636366"/><circle cx="26" cy="40" r="4" fill="#636366"/><circle cx="37" cy="40" r="4" fill="#636366"/><circle cx="49" cy="40" r="4" fill="#ff9f0a"/>
-      <rect x="11" y="46" width="19" height="8" rx="4" fill="#636366"/><circle cx="37" cy="50" r="4" fill="#636366"/><circle cx="49" cy="50" r="4" fill="#ff9f0a"/>`,
+      <defs><linearGradient id="caBg-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3a3a3e"/><stop offset="100%" stop-color="#1c1c1e"/></linearGradient></defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#caBg-${u})"/>
+      <rect x="9" y="9" width="46" height="12" rx="3.5" fill="#121316" stroke="#ffffff" stroke-opacity=".08"/>
+      <text x="51" y="18" text-anchor="end" fill="#f5f5f7" font-size="8" font-weight="500" font-family="-apple-system,sans-serif">128</text>
+      <circle cx="14.5" cy="28.5" r="4" fill="#8e8e93"/><circle cx="26" cy="28.5" r="4" fill="#8e8e93"/><circle cx="37.5" cy="28.5" r="4" fill="#8e8e93"/><circle cx="49" cy="28.5" r="4" fill="#ff9f0a"/>
+      <circle cx="14.5" cy="39" r="4" fill="#525257"/><circle cx="26" cy="39" r="4" fill="#525257"/><circle cx="37.5" cy="39" r="4" fill="#525257"/><circle cx="49" cy="39" r="4" fill="#ff9f0a"/>
+      <rect x="10.5" y="45.5" width="19.5" height="8" rx="4" fill="#525257"/><circle cx="37.5" cy="49.5" r="4" fill="#525257"/><circle cx="49" cy="49.5" r="4" fill="#ff9f0a"/>`,
     portfolio: `
-      <defs><linearGradient id="pf-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4facfe"/><stop offset="100%" stop-color="#3a47d5"/></linearGradient></defs>
+      <defs><linearGradient id="pf-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="50%" stop-color="#2563eb"/><stop offset="100%" stop-color="#3730a3"/></linearGradient></defs>
       <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#pf-${u})"/>
-      <polygon points="32,14 48,23 48,41 32,50 16,41 16,23" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/>
-      <path d="M16 23L32 32L48 23M32 32V50" stroke="#fff" stroke-opacity=".85" stroke-width="2.4"/>`,
+      <polygon points="32,13 48,22 48,42 32,51 16,42 16,22" fill="#fff" fill-opacity=".12" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M16 22L32 31L48 22M32 31V51" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="32" cy="31" r="2.6" fill="#fff"/>`,
     lab: `
-      <defs><linearGradient id="lb-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#4f46e5"/></linearGradient></defs>
+      <defs><linearGradient id="lb-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="48%" stop-color="#a855f7"/><stop offset="100%" stop-color="#ec4899"/></linearGradient></defs>
       <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#lb-${u})"/>
-      <path d="M32 14L35.5 26.5L48 30L35.5 33.5L32 46L28.5 33.5L16 30L28.5 26.5Z" fill="#fff"/>
-      <circle cx="46" cy="18" r="2.5" fill="#fff" opacity=".8"/><circle cx="19" cy="44" r="2" fill="#fff" opacity=".7"/>`,
+      <path d="M32 13L35.8 26.2L49 30L35.8 33.8L32 47L28.2 33.8L15 30L28.2 26.2Z" fill="#fff"/>
+      <path d="M46 14L47.2 18L51 19.2L47.2 20.4L46 24.4L44.8 20.4L41 19.2L44.8 18Z" fill="#fff" opacity=".9"/>`,
     settings: `
-      <defs><linearGradient id="st-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d4d7dd"/><stop offset="100%" stop-color="#8e949e"/></linearGradient></defs>
-      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#st-${u})"/>
-      <circle cx="32" cy="32" r="16" fill="#484b52"/>
-      <circle cx="32" cy="32" r="11" fill="none" stroke="#c7cbd4" stroke-width="4.5" stroke-dasharray="4.5 3"/>
-      <circle cx="32" cy="32" r="5" fill="#2c2f36"/>`,
+      <defs>
+        <linearGradient id="stCase-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d2d5dc"/><stop offset="50%" stop-color="#8b919c"/><stop offset="100%" stop-color="#5b606b"/></linearGradient>
+        <radialGradient id="stWell-${u}" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#17191e"/><stop offset="100%" stop-color="#343841"/></radialGradient>
+        <linearGradient id="stMetal-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f3f4f6"/><stop offset="50%" stop-color="#aeb4be"/><stop offset="100%" stop-color="#6b7280"/></linearGradient>
+      </defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#stCase-${u})"/>
+      <circle cx="32" cy="32" r="22.5" fill="url(#stWell-${u})" stroke="#ffffff" stroke-opacity=".28" stroke-width=".8"/>
+      <path d="${makeGearPath(32,32,20.5,16.8,14)}" fill="url(#stMetal-${u})" stroke="#1f2937" stroke-opacity=".35" stroke-width=".6"/>
+      <circle cx="32" cy="32" r="14" fill="#272a30" stroke="#e5e7eb" stroke-opacity=".35" stroke-width="1"/>
+      <path d="${makeGearPath(32,32,12.5,9.6,8)}" fill="url(#stMetal-${u})"/>
+      <circle cx="32" cy="32" r="6.2" fill="#202329" stroke="#d1d5db" stroke-opacity=".5" stroke-width="1"/>
+      <circle cx="32" cy="32" r="2.6" fill="#9ca3af"/>`,
     about: `
-      <defs><linearGradient id="ab-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient></defs>
+      <defs><linearGradient id="ab-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#334155"/><stop offset="100%" stop-color="#0f172a"/></linearGradient></defs>
       <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#ab-${u})"/>
-      <rect x="14" y="16" width="36" height="24" rx="3.5" fill="#38bdf8" fill-opacity=".2" stroke="#e2e8f0" stroke-width="2.2"/>
-      <path d="M11 44H53" stroke="#e2e8f0" stroke-width="2.6" stroke-linecap="round"/>`,
+      <rect x="12" y="15" width="40" height="26" rx="4" fill="#38bdf8" fill-opacity=".22" stroke="#f1f5f9" stroke-width="2.2"/>
+      <path d="M26 41L24 47H40L38 41" fill="#cbd5e1"/>
+      <path d="M18 48H46" stroke="#f1f5f9" stroke-width="2.4" stroke-linecap="round"/>`,
     launchpad: `
-      <rect x="3" y="3" width="58" height="58" rx="14" fill="#f3f4f6"/>
-      <rect x="12" y="12" width="11" height="11" rx="3" fill="#ff3b30"/><rect x="26.5" y="12" width="11" height="11" rx="3" fill="#ff9500"/><rect x="41" y="12" width="11" height="11" rx="3" fill="#ffcc00"/>
-      <rect x="12" y="26.5" width="11" height="11" rx="3" fill="#34c759"/><rect x="26.5" y="26.5" width="11" height="11" rx="3" fill="#30b0c7"/><rect x="41" y="26.5" width="11" height="11" rx="3" fill="#007aff"/>
-      <rect x="12" y="41" width="11" height="11" rx="3" fill="#5856d6"/><rect x="26.5" y="41" width="11" height="11" rx="3" fill="#af52de"/><rect x="41" y="41" width="11" height="11" rx="3" fill="#ff2d55"/>`,
+      <defs><linearGradient id="lpBg-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff" stop-opacity=".92"/><stop offset="100%" stop-color="#d8dee9" stop-opacity=".9"/></linearGradient></defs>
+      <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#lpBg-${u})"/>
+      <rect x="12" y="12" width="11" height="11" rx="3.2" fill="#ff3b30"/><rect x="26.5" y="12" width="11" height="11" rx="3.2" fill="#ff9500"/><rect x="41" y="12" width="11" height="11" rx="3.2" fill="#ffcc00"/>
+      <rect x="12" y="26.5" width="11" height="11" rx="3.2" fill="#34c759"/><rect x="26.5" y="26.5" width="11" height="11" rx="3.2" fill="#30b0c7"/><rect x="41" y="26.5" width="11" height="11" rx="3.2" fill="#007aff"/>
+      <rect x="12" y="41" width="11" height="11" rx="3.2" fill="#5856d6"/><rect x="26.5" y="41" width="11" height="11" rx="3.2" fill="#af52de"/><rect x="41" y="41" width="11" height="11" rx="3.2" fill="#ff2d55"/>`,
     trash: `
-      <defs><linearGradient id="tr-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f1f5f9"/><stop offset="100%" stop-color="#94a3b8"/></linearGradient></defs>
-      <rect x="14" y="14" width="36" height="40" rx="5" fill="url(#tr-${u})" fill-opacity=".85" stroke="#fff" stroke-opacity=".5"/>
-      <rect x="12" y="11" width="40" height="5" rx="2.5" fill="#e2e8f0"/>
-      <line x1="24" y1="22" x2="25" y2="47" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
-      <line x1="32" y1="22" x2="32" y2="47" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
-      <line x1="40" y1="22" x2="39" y2="47" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>`,
+      <defs><linearGradient id="tr-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff" stop-opacity=".88"/><stop offset="100%" stop-color="#94a3b8" stop-opacity=".75"/></linearGradient></defs>
+      <path d="M15 15H49L46 53C45.8 55 44.2 56.5 42.2 56.5H21.8C19.8 56.5 18.2 55 18 53L15 15Z" fill="url(#tr-${u})" stroke="#fff" stroke-opacity=".6"/>
+      <ellipse cx="32" cy="14.5" rx="18" ry="3.5" fill="#e2e8f0" stroke="#fff" stroke-opacity=".8"/>
+      <line x1="24" y1="22" x2="25.2" y2="49" stroke="#475569" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
+      <line x1="32" y1="22" x2="32" y2="49" stroke="#475569" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
+      <line x1="40" y1="22" x2="38.8" y2="49" stroke="#475569" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>`,
     file: `
       <path d="M14 8H38L50 20V54C50 56.2 48.2 58 46 58H14C11.8 58 10 56.2 10 54V12C10 9.8 11.8 8 14 8Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
       <path d="M38 8V20H50" fill="#e2e8f0"/>
@@ -902,7 +1092,7 @@ function getAppIconSVG(id, size=48){
       <line x1="17" y1="37" x2="43" y2="37" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
       <line x1="17" y1="45" x2="33" y2="45" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>`
   };
-  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">${icons[id]||icons.file}<rect x="3.5" y="3.5" width="57" height="57" rx="13.5" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1"/></svg>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">${icons[id]||icons.file}<path d="M17 4.2H47C54 4.2 59.8 10 59.8 17V24C46 21 18 21 4.2 24V17C4.2 10 10 4.2 17 4.2Z" fill="#fff" fill-opacity=".14"/><rect x="3.5" y="3.5" width="57" height="57" rx="13.5" fill="none" stroke="#fff" stroke-opacity=".34" stroke-width="1"/></svg>`;
 }
 
 /* ===================== BOOT & CLOCK ===================== */
@@ -1340,27 +1530,38 @@ function renderAppContent(id){
   }
 
   if(id==='music'){
-    return `<div class="scroll-pane" style="display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center">
-      <div class="music-disc" id="music-disc" style="background:linear-gradient(135deg,#ff375f,#5e5ce6)">
-        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        <div class="eq-bars" id="eq-bars" style="position:absolute;bottom:10px"></div>
+    return `<div class="music-shell">
+      <div class="music-left">
+        <div style="text-align:center;width:100%">
+          <div class="music-cover" id="music-cover" style="margin:0 auto 12px">
+            <svg viewBox="0 0 220 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" id="music-art-svg"></svg>
+            <div class="music-eq" id="eq-bars"></div>
+          </div>
+          <div style="font-size:17px;font-weight:700;letter-spacing:-.2px" id="music-title">红尘客栈</div>
+          <div style="font-size:12.5px;color:var(--text-2);margin-top:2px" id="music-artist">周杰伦 (Jay Chou) · 十二新作</div>
+        </div>
+        <div class="music-scrubber">
+          <input type="range" class="music-range" id="music-progress" min="0" max="1000" value="0" oninput="seekMusic(this.value)">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums">
+            <span id="music-cur-time">00:00</span><span id="music-dur-time">04:05</span>
+          </div>
+        </div>
+        <div class="music-ctrl-row">
+          <button class="btn-icon" onclick="prevTrack()" title="上一首" style="font-size:18px">⏮</button>
+          <button class="music-play-circle" onclick="toggleMusicPlay()" id="music-play-btn" title="播放 / 暂停">▶</button>
+          <button class="btn-icon" onclick="nextTrack()" title="下一首" style="font-size:18px">⏭</button>
+        </div>
+        <div style="width:100%;display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--text-2)">
+          <span>🔈</span>
+          <input type="range" class="music-range" id="music-vol" min="0" max="1" step="0.02" value="0.85" oninput="setMusicVolume(this.value)">
+          <label class="btn-mac" style="padding:3px 9px;font-size:11px;cursor:pointer" title="导入本地 MP3">
+            导入音频<input type="file" accept="audio/*" id="local-audio-file" style="display:none">
+          </label>
+        </div>
       </div>
-      <div>
-        <div style="font-size:20px;font-weight:700" id="music-title">星空 Lo-Fi（离线合成）</div>
-        <div style="font-size:12.5px;color:var(--text-2);margin-top:4px">Web Audio 实时生成 · 零外链零流量</div>
-      </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <button class="btn-mac" onclick="selectTrack(0)">星空 Lo-Fi</button>
-        <button class="btn-mac" onclick="selectTrack(1)">雨夜和弦</button>
-        <button class="btn-mac" onclick="selectTrack(2)">深空脉冲</button>
-      </div>
-      <div style="display:flex;gap:12px;align-items:center">
-        <button class="btn-mac btn-primary" style="padding:8px 24px;border-radius:99px" onclick="toggleAmbientMusic()" id="music-play-btn">▶ 播放氛围音轨</button>
-      </div>
-      <div style="width:100%;max-width:420px;padding:12px;border-radius:12px;background:var(--card-bg);border:1px solid var(--hairline)">
-        <div style="font-size:12px;color:var(--text-2);margin-bottom:8px">或选择本地音乐文件播放（不上传服务器）：</div>
-        <input type="file" accept="audio/*" id="local-audio-file" style="font-size:12px;width:100%">
-        <audio id="local-audio-el" controls style="width:100%;margin-top:8px;display:none"></audio>
+      <div class="music-right">
+        <div class="music-track-tabs" id="music-track-tabs"></div>
+        <div class="music-lyrics" id="music-lyrics"></div>
       </div>
     </div>`;
   }
@@ -1457,7 +1658,7 @@ function renderAppContent(id){
   if(id==='terminal'){
     return `<div class="term-body" id="term-body" onclick="document.getElementById('term-in')?.focus()">
       <div class="term-line" style="color:#94a3b8">Last login: ${new Date().toDateString()} on ttys001</div>
-      <div class="term-line">XXUUS OS (Sequoia Web Edition) — 输入 <b>help</b> 查看可用命令，支持上下键历史记录。</div>
+      <div class="term-line">XXUUS OS (macOS 27 Liquid Glass Edition) — 输入 <b>help</b> 查看可用命令，支持上下键历史记录。</div>
       <div id="term-out"></div>
       <div class="term-prompt"><span>xxuus@MacBook-Pro ~ %</span><input id="term-in" autocomplete="off" spellcheck="false"></div>
     </div>`;
@@ -1490,7 +1691,7 @@ function renderAppContent(id){
       <div style="margin-top:4px">${getAppIconSVG('about', 76)}</div>
       <div>
         <div style="font-size:22px;font-weight:700;letter-spacing:-.4px">XXUUS OS</div>
-        <div style="font-size:12px;color:var(--text-2);margin-top:2px">Sequoia Web Edition 2.0</div>
+        <div style="font-size:12px;color:var(--text-2);margin-top:2px">macOS 27 Liquid Glass Edition</div>
       </div>
       <div style="width:100%;border-radius:12px;background:var(--card-bg);border:1px solid var(--hairline);padding:12px 14px;font-size:12px;display:flex;flex-direction:column;gap:8px">
         <div style="display:flex;justify-content:space-between"><span style="color:var(--text-2)">处理器</span><span>Browser Neural Engine</span></div>
@@ -1823,48 +2024,203 @@ function initTerminal(win){
   });
 }
 
-/* ===================== WEB AUDIO AMBIENT SYNTH (OFFLINE MUSIC) ===================== */
-let audioCtx=null, synthTimer=null, eqTimer=null;
+/* ===================== MUSIC ENGINE (JAY CHOU MP3 + LRC + SYNTH) ===================== */
+function parseLRC(raw){
+  return raw.split(/\r?\n/).map(line=>{
+    const m = line.match(/\[(\d+):(\d+(?:\.\d+)?)\](.*)/);
+    if(!m) return null;
+    return {t: Number(m[1])*60 + Number(m[2]), text: m[3].trim()};
+  }).filter(x=>x && x.text);
+}
+
 const TRACKS = [
-  {name:'星空 Lo-Fi（离线合成）', notes:[261.63, 329.63, 392.00, 493.88, 392.00, 329.63]},
-  {name:'雨夜和弦（离线合成）', notes:[220.00, 261.63, 329.63, 440.00, 349.23, 293.66]},
-  {name:'深空脉冲（离线合成）', notes:[174.61, 220.00, 261.63, 349.23, 329.63, 261.63]}
+  {id:'jay', name:'红尘客栈', artist:'周杰伦 (Jay Chou) · 十二新作', type:'mp3', src:encodeURI('./红尘客栈-周杰伦.mp3'), lrc:parseLRC(JAY_LRC_TEXT)},
+  {id:'lofi', name:'星空 Lo-Fi', artist:'XXUUS WebAudio · 离线合成', type:'synth', notes:[261.63, 329.63, 392.00, 493.88, 392.00, 329.63]},
+  {id:'rain', name:'雨夜和弦', artist:'XXUUS WebAudio · 离线合成', type:'synth', notes:[220.00, 261.63, 329.63, 440.00, 349.23, 293.66]},
+  {id:'space', name:'深空脉冲', artist:'XXUUS WebAudio · 离线合成', type:'synth', notes:[174.61, 220.00, 261.63, 349.23, 329.63, 261.63]}
 ];
+
+const mp3Audio = new Audio();
+mp3Audio.preload = 'metadata';
+mp3Audio.volume = 0.85;
+let audioCtx=null, synthTimer=null, eqTimer=null, activeLyricIdx=-1;
+
+if(location.protocol.startsWith('http')){
+  fetch(encodeURI('./红尘客栈-周杰伦.lrc')).then(r=>r.ok?r.text():'').then(txt=>{
+    if(txt && txt.includes('[')){ TRACKS[0].lrc = parseLRC(txt); renderMusicLyrics(); }
+  }).catch(()=>{});
+}
+
+function fmtTime(sec){
+  if(!Number.isFinite(sec)||sec<0) return '00:00';
+  const m = Math.floor(sec/60), s = Math.floor(sec%60);
+  return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function getCoverSVG(track){
+  if(track.id==='jay' || track.type==='custom'){
+    return `
+      <defs>
+        <linearGradient id="jkSky" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2c1220"/><stop offset="55%" stop-color="#6b1d2f"/><stop offset="100%" stop-color="#c96f3b"/></linearGradient>
+        <radialGradient id="jkMoon" cx="72%" cy="28%" r="28%"><stop offset="0%" stop-color="#fff4d6"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect width="220" height="220" fill="url(#jkSky)"/>
+      <circle cx="156" cy="60" r="34" fill="#fde68a" opacity=".88"/>
+      <circle cx="156" cy="60" r="65" fill="url(#jkMoon)"/>
+      <path d="M0 155 Q55 125 110 148 T220 135 L220 220 L0 220Z" fill="#180c14" opacity=".7"/>
+      <path d="M42 142 L68 122 L95 142 Z M52 142 V168 H86 V142 M38 142 H100" fill="#12090f" stroke="#f59e0b" stroke-opacity=".32" stroke-width="1"/>
+      <path d="M0 175 Q80 160 150 182 T220 170 L220 220 L0 220Z" fill="#0d060a"/>
+      <rect x="20" y="20" width="28" height="62" rx="4" fill="#b91c1c" stroke="#fca5a5" stroke-opacity=".45"/>
+      <text x="34" y="37" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" style="writing-mode:vertical-rl;letter-spacing:2px">红尘客栈</text>`;
+  }
+  return `
+    <defs><linearGradient id="ambC" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="50%" stop-color="#6366f1"/><stop offset="100%" stop-color="#ec4899"/></linearGradient></defs>
+    <rect width="220" height="220" fill="url(#ambC)"/>
+    <circle cx="110" cy="110" r="56" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2"/>
+    <path d="M96 135V82L138 72V125" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="88" cy="136" r="10" fill="#fff"/><circle cx="130" cy="126" r="10" fill="#fff"/>`;
+}
+
 function initMusicUI(win){
   const eq = win.querySelector('#eq-bars');
-  if(eq) eq.innerHTML = Array.from({length:8},()=>'<div class="eq-bar"></div>').join('');
+  if(eq) eq.innerHTML = Array.from({length:6},()=>'<div class="eq-bar"></div>').join('');
   const fileIn = win.querySelector('#local-audio-file');
   fileIn.onchange = ()=>{
     if(fileIn.files[0]){
-      stopAmbientSynth();
-      const el = win.querySelector('#local-audio-el');
-      el.src = URL.createObjectURL(fileIn.files[0]);
-      el.style.display = 'block';
-      el.play();
-      win.querySelector('#music-title').textContent = fileIn.files[0].name;
+      const f = fileIn.files[0];
+      TRACKS.push({id:'custom-'+Date.now(), name:f.name.replace(/\.[^.]+$/,''), artist:'本地导入音频', type:'custom', src:URL.createObjectURL(f), lrc:[]});
+      selectTrack(TRACKS.length-1, true);
     }
   };
+  renderMusicTrackTabs();
+  renderMusicLyrics();
   syncMusicLabels();
 }
-function selectTrack(idx){
+
+function renderMusicTrackTabs(){
+  const tabs = document.getElementById('music-track-tabs');
+  if(!tabs) return;
+  tabs.innerHTML = TRACKS.map((t,i)=>`<button class="music-tab ${i===STATE.musicTrack?'active':''}" onclick="selectTrack(${i}, true)">${t.name}</button>`).join('');
+}
+
+function renderMusicLyrics(){
+  const box = document.getElementById('music-lyrics');
+  if(!box) return;
+  const tr = TRACKS[STATE.musicTrack];
+  if(!tr.lrc || !tr.lrc.length){
+    box.innerHTML = `<div style="margin:auto;text-align:center;color:var(--text-2);font-size:14px;line-height:1.8">
+      <div style="font-size:28px;margin-bottom:8px">🎵</div>
+      <b>${tr.name}</b><br>纯音乐 / 离线氛围合成音轨，暂无滚动歌词
+    </div>`;
+    return;
+  }
+  box.innerHTML = tr.lrc.map((l,i)=>`<div class="lrc-line ${i===activeLyricIdx?'active':''}" data-idx="${i}" onclick="jumpToLyric(${l.t})">${l.text}</div>`).join('');
+}
+
+function jumpToLyric(t){
+  const tr = TRACKS[STATE.musicTrack];
+  if(tr.type==='synth') return;
+  if(!mp3Audio.src || !mp3Audio.src.includes(tr.src.replace('./',''))){
+    mp3Audio.src = tr.src;
+  }
+  mp3Audio.currentTime = t;
+  if(!STATE.musicPlaying) startTrackPlayback();
+}
+
+function selectTrack(idx, autoPlay=false){
+  stopAllAudio();
   STATE.musicTrack = idx;
-  if(STATE.musicPlaying){ stopAmbientSynth(); startAmbientSynth(); }
+  activeLyricIdx = -1;
+  renderMusicTrackTabs();
+  renderMusicLyrics();
+  syncMusicLabels();
+  if(autoPlay) startTrackPlayback();
+}
+function prevTrack(){ selectTrack((STATE.musicTrack - 1 + TRACKS.length) % TRACKS.length, true); }
+function nextTrack(){ selectTrack((STATE.musicTrack + 1) % TRACKS.length, true); }
+
+function toggleMusicPlay(){
+  if(STATE.musicPlaying) stopAllAudio();
+  else startTrackPlayback();
   syncMusicLabels();
 }
-function toggleAmbientMusic(){
-  if(STATE.musicPlaying) stopAmbientSynth();
-  else startAmbientSynth();
-  syncMusicLabels();
+
+function startTrackPlayback(){
+  const tr = TRACKS[STATE.musicTrack];
+  if(tr.type==='synth'){
+    startAmbientSynth(tr);
+  } else {
+    if(mp3Audio.getAttribute('data-track') !== tr.id){
+      mp3Audio.src = tr.src;
+      mp3Audio.setAttribute('data-track', tr.id);
+    }
+    mp3Audio.play().then(()=>{
+      STATE.musicPlaying = true;
+      startEqAnim();
+      syncMusicLabels();
+    }).catch(()=>{
+      toast('未检测到音频文件或浏览器阻止播放，已切换离线合成音轨');
+      selectTrack(1, true);
+    });
+  }
 }
-function startAmbientSynth(){
+
+mp3Audio.addEventListener('timeupdate', ()=>{
+  const tr = TRACKS[STATE.musicTrack];
+  if(!tr || tr.type==='synth') return;
+  const cur = mp3Audio.currentTime || 0, dur = mp3Audio.duration || 245;
+  const prog = document.getElementById('music-progress');
+  const ct = document.getElementById('music-cur-time');
+  const dt = document.getElementById('music-dur-time');
+  if(prog) prog.value = Math.round((cur / dur) * 1000);
+  if(ct) ct.textContent = fmtTime(cur);
+  if(dt && Number.isFinite(mp3Audio.duration)) dt.textContent = fmtTime(mp3Audio.duration);
+
+  if(tr.lrc && tr.lrc.length){
+    let idx = -1;
+    for(let i=0;i<tr.lrc.length;i++){
+      if(cur + 0.25 >= tr.lrc[i].t) idx = i; else break;
+    }
+    if(idx !== activeLyricIdx){
+      activeLyricIdx = idx;
+      const lines = document.querySelectorAll('#music-lyrics .lrc-line');
+      lines.forEach((el,i)=>el.classList.toggle('active', i===idx));
+      const activeEl = lines[idx];
+      if(activeEl){
+        activeEl.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+      const pillTxt = document.getElementById('mb-pill-text');
+      const ccSub = document.getElementById('cc-music-status');
+      if(idx>=0 && tr.lrc[idx]){
+        if(pillTxt) pillTxt.textContent = tr.lrc[idx].text;
+        if(ccSub) ccSub.textContent = tr.lrc[idx].text;
+      }
+    }
+  }
+});
+mp3Audio.addEventListener('ended', ()=>nextTrack());
+mp3Audio.addEventListener('error', ()=>{
+  if(STATE.musicPlaying && TRACKS[STATE.musicTrack].type==='mp3'){
+    toast('未加载到 MP3 文件（请确保与 index.html 同目录），已切换离线合成音轨');
+    selectTrack(1, true);
+  }
+});
+
+function seekMusic(val){
+  const tr = TRACKS[STATE.musicTrack];
+  if(tr.type==='synth' || !mp3Audio.duration) return;
+  mp3Audio.currentTime = (Number(val)/1000) * mp3Audio.duration;
+}
+function setMusicVolume(v){ mp3Audio.volume = Number(v); }
+
+function startAmbientSynth(tr){
   if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
   if(audioCtx.state==='suspended') audioCtx.resume();
   STATE.musicPlaying = true;
   let step = 0;
   const playNote = ()=>{
     if(!STATE.musicPlaying) return;
-    const notes = TRACKS[STATE.musicTrack].notes;
-    const freq = notes[step % notes.length];
+    const freq = tr.notes[step % tr.notes.length];
     step++;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -1878,29 +2234,48 @@ function startAmbientSynth(){
   };
   playNote();
   synthTimer = setInterval(playNote, 1300);
+  startEqAnim();
+  syncMusicLabels();
+}
+
+function startEqAnim(){
+  clearInterval(eqTimer);
   eqTimer = setInterval(()=>{
     document.querySelectorAll('.eq-bar').forEach(b=>b.style.height=(4+Math.random()*14)+'px');
-  },160);
+  },150);
 }
-function stopAmbientSynth(){
+
+function stopAllAudio(){
   STATE.musicPlaying = false;
+  mp3Audio.pause();
   clearInterval(synthTimer); clearInterval(eqTimer);
   document.querySelectorAll('.eq-bar').forEach(b=>b.style.height='4px');
+  syncMusicLabels();
 }
+
 function syncMusicLabels(){
-  const t = TRACKS[STATE.musicTrack].name;
+  const tr = TRACKS[STATE.musicTrack];
   const btn = document.getElementById('music-play-btn');
   const ccBtn = document.getElementById('cc-music-btn');
   const mt = document.getElementById('music-title');
+  const ma = document.getElementById('music-artist');
+  const art = document.getElementById('music-art-svg');
+  const cover = document.getElementById('music-cover');
   const cmt = document.getElementById('cc-music-title');
   const cms = document.getElementById('cc-music-status');
-  const disc = document.getElementById('music-disc');
-  if(mt) mt.textContent = t;
-  if(cmt) cmt.textContent = t.split('（')[0];
-  if(cms) cms.textContent = STATE.musicPlaying ? '正在播放 · WebAudio' : '已暂停 · 离线合成';
-  if(btn) btn.textContent = STATE.musicPlaying ? '⏸ 暂停播放' : '▶ 播放氛围音轨';
+  const pill = document.getElementById('mb-music-pill');
+  const pillTxt = document.getElementById('mb-pill-text');
+
+  if(mt) mt.textContent = tr.name;
+  if(ma) ma.textContent = tr.artist;
+  if(art) art.innerHTML = getCoverSVG(tr);
+  if(cover) cover.classList.toggle('playing', STATE.musicPlaying);
+  if(btn) btn.textContent = STATE.musicPlaying ? '⏸' : '▶';
+  if(cmt) cmt.textContent = `${tr.name} · ${tr.artist.split(' ')[0]}`;
+  if(cms && (!STATE.musicPlaying || tr.type==='synth')) cms.textContent = STATE.musicPlaying ? '正在播放 · WebAudio' : '点击播放 · 同步歌词';
   if(ccBtn) ccBtn.textContent = STATE.musicPlaying ? '暂停' : '播放';
-  if(disc) disc.classList.toggle('playing', STATE.musicPlaying);
+  if(pill) pill.classList.toggle('playing', STATE.musicPlaying);
+  if(pillTxt && (!STATE.musicPlaying || activeLyricIdx<0)) pillTxt.textContent = `${tr.name} · ${tr.artist.split(' ')[0]}`;
 }
 
 /* ===================== PORTFOLIO 3D GLOBE CANVAS ===================== */
