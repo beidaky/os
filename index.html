@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0d111a">
 <title>XXUUS OS — macOS 27 Web</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23e5e7eb'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='2' y='2' width='60' height='60' rx='15' fill='url(%23g)' stroke='%23cbd5e1' stroke-width='1.5'/%3E%3Cpath fill='%23000000' transform='translate(14,12) scale(0.212)' d='M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.13-1.9-14.34-6.08-3.69-3.03-7.61-7.82-11.77-14.37-5.11-7.86-9.31-16.95-12.6-27.27-3.48-11.06-5.23-21.74-5.23-32.04 0-12.01 2.94-22.39 8.83-31.14 5.89-8.75 13.48-13.28 22.79-13.59 4.78 0 10.22 1.46 16.32 4.35 6.1 2.9 10.02 4.39 11.77 4.49 1.4 0 5.71-1.76 12.91-5.27 6.99-3.35 12.91-4.76 17.77-4.24 13.11 1.06 22.97 6.23 29.59 15.51-11.71 7.09-17.46 16.95-17.24 29.56.22 9.86 3.79 18.08 10.71 24.64 4.86 4.65 10.7 7.67 17.52 9.07-1.41 4.12-2.92 7.89-4.54 11.31zM119.22 31.02c0 7.77-2.84 15.02-8.5 21.74-6.83 7.98-15.09 12.61-24.04 11.88-.11-.91-.17-1.88-.17-2.9 0-7.45 3.25-15.42 9.01-21.95 2.88-3.32 6.53-6.08 10.97-8.28 4.43-2.18 8.63-3.38 12.58-3.59.1 1.07.15 2.11.15 3.1z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23e2e8f0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='2' y='2' width='60' height='60' rx='16' fill='url(%23g)' stroke='%23cbd5e1' stroke-width='1.5'/%3E%3Cpath fill='%23000000' transform='translate(11,10) scale(0.42)' d='M50 34C55 34 60 29 67 29C74 29 80 33 83 39C73 43 70 48 70 54C70 61 76 66 84 69C81 79 74 92 65 92C58 92 55 89 50 89C45 89 42 92 35 92C25 92 16 74 16 54C16 37 25 29 34 29C41 29 45 34 50 34ZM50 27C50 17 57 9 67 8C67 18 60 26 50 27Z'/%3E%3C/svg%3E">
 <style>
 :root{
   --accent:#0a84ff;
@@ -77,11 +77,18 @@ button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:default}
 
 /* ========== WALLPAPER & DESKTOP ========== */
-#desktop{position:relative;width:100%;height:100%;overflow:hidden;isolation:isolate;transition:transform .52s cubic-bezier(.22,1,.36,1),filter .52s cubic-bezier(.22,1,.36,1),opacity .45s ease}
-body.is-locked #desktop{transform:scale(.945);filter:blur(12px) brightness(.74)}
-#wallpaper{position:absolute;inset:-20px;z-index:-2;transition:opacity .45s ease;background-size:cover;background-position:center}
-#wallpaper-canvas{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.85}
-#wallpaper-svg{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+#desktop{position:relative;width:100%;height:100%;overflow:hidden;isolation:isolate}
+#wallpaper{position:absolute;inset:-20px;z-index:-2;transition:transform .58s cubic-bezier(.22,1,.36,1),filter .5s ease,opacity .45s ease;background-size:cover;background-position:center}
+#wallpaper-canvas{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.85;transition:transform .58s cubic-bezier(.22,1,.36,1)}
+#wallpaper-svg{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;transition:transform .58s cubic-bezier(.22,1,.36,1)}
+#menubar,#desktop-icons,#windows,#dock-container{transition:opacity .4s cubic-bezier(.22,1,.36,1),transform .48s cubic-bezier(.22,1,.36,1)}
+body.is-locked #menubar,
+body.is-locked #desktop-icons,
+body.is-locked #windows,
+body.is-locked #dock-container{opacity:0;transform:scale(.945);pointer-events:none}
+body.is-locked #wallpaper,
+body.is-locked #wallpaper-svg,
+body.is-locked #wallpaper-canvas{transform:scale(1.04)}
 
 #selection-box{
   position:absolute;z-index:5;display:none;pointer-events:none;
@@ -292,34 +299,20 @@ body.is-locked #desktop{transform:scale(.945);filter:blur(12px) brightness(.74)}
   box-shadow:var(--shadow-inactive),inset 0 1px 1px rgba(255,255,255,.42),inset 0 0 0 1px var(--border-inner),0 0 0 .5px var(--border-outer);
   overflow:hidden;display:flex;flex-direction:column;
   transform-origin:center center;
-  transition:opacity .28s cubic-bezier(.22,1,.36,1),transform .4s cubic-bezier(.2,1.02,.28,1),filter .28s ease,box-shadow .22s ease;
+  transition:box-shadow .22s ease;
   will-change:transform,opacity;
 }
 .window.animating-geom{
-  transition:left .32s cubic-bezier(.22,1,.36,1),top .32s cubic-bezier(.22,1,.36,1),width .32s cubic-bezier(.22,1,.36,1),height .32s cubic-bezier(.22,1,.36,1),border-radius .32s cubic-bezier(.22,1,.36,1),opacity .28s ease,transform .4s cubic-bezier(.2,1.02,.28,1),box-shadow .22s ease;
+  transition:left .32s cubic-bezier(.22,1,.36,1),top .32s cubic-bezier(.22,1,.36,1),width .32s cubic-bezier(.22,1,.36,1),height .32s cubic-bezier(.22,1,.36,1),border-radius .32s cubic-bezier(.22,1,.36,1),box-shadow .22s ease;
 }
 body.win-dragging .window{transition:none!important}
 .window.active-win{
   box-shadow:var(--shadow-active),inset 0 1px 1.5px rgba(255,255,255,.52),inset 0 0 0 1px var(--border-inner),0 0 0 .5px var(--border-outer);
 }
-.window.dock-preopen{
-  opacity:0;
-  transform:translate3d(var(--dock-dx,0px),var(--dock-dy,180px),0) scale(.16);
-  filter:blur(6px);
-}
 .window.minimized{
+  visibility:hidden;
   opacity:0;
-  transform:translate3d(var(--dock-dx,0px),var(--dock-dy,220px),0) scale(.14);
-  filter:blur(5px);
   pointer-events:none;
-  transition:opacity .3s cubic-bezier(.4,0,.2,1),transform .38s cubic-bezier(.32,.08,.24,1),filter .28s ease;
-}
-.window.closing{
-  opacity:0;
-  transform:scale(.9) translateY(8px);
-  filter:blur(4px);
-  pointer-events:none;
-  transition:opacity .19s ease,transform .2s cubic-bezier(.4,0,1,1),filter .19s ease;
 }
 .window.maximized{
   left:0!important;top:var(--menubar-h)!important;
@@ -574,18 +567,23 @@ body.win-dragging iframe{pointer-events:none!important}
 
 /* ========== SPOTLIGHT ========== */
 #spotlight-backdrop{
-  position:fixed;inset:0;z-index:40000;display:none;align-items:flex-start;justify-content:center;
+  position:fixed;inset:0;z-index:40000;display:flex;align-items:flex-start;justify-content:center;
   padding-top:17vh;background:rgba(0,0,0,.18);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .2s ease,visibility .2s ease;
 }
-#spotlight-backdrop.show{display:flex}
+#spotlight-backdrop.show{opacity:1;visibility:visible;pointer-events:auto}
 #spotlight{
   width:min(620px,calc(100vw - 28px));border-radius:16px;
   background:var(--popover-bg);
   backdrop-filter:blur(48px) saturate(200%);-webkit-backdrop-filter:blur(48px) saturate(200%);
   border:1px solid var(--border-inner);
   box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 0 .5px var(--border-outer);
-  overflow:hidden;animation:popIn .14s ease;
+  overflow:hidden;
+  transform:scale(.96) translateY(-10px);
+  transition:transform .24s cubic-bezier(.22,1,.36,1);
 }
+#spotlight-backdrop.show #spotlight{transform:scale(1) translateY(0)}
 .spot-input-row{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--hairline)}
 .spot-input-row input{flex:1;border:0;background:transparent;outline:none;font-size:19px;font-weight:400}
 .spot-results{max-height:320px;overflow:auto;padding:8px}
@@ -625,38 +623,65 @@ body.win-dragging iframe{pointer-events:none!important}
 /* ========== LOCK SCREEN ========== */
 #lockscreen{
   position:fixed;inset:0;z-index:60000;display:flex;flex-direction:column;align-items:center;
-  justify-content:space-between;padding:70px 20px 56px;
-  background:radial-gradient(circle at 50% 25%,rgba(30,45,82,.35),rgba(8,10,18,.62));
-  backdrop-filter:blur(46px) saturate(175%);-webkit-backdrop-filter:blur(46px) saturate(175%);
+  justify-content:space-between;padding:74px 20px 40px;
+  background:radial-gradient(circle at 50% 35%,rgba(16,24,42,.18),rgba(6,8,16,.44));
+  backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
   color:#fff;
-  opacity:0;visibility:hidden;pointer-events:none;transform:scale(1.06);filter:blur(14px);
-  transition:opacity .44s cubic-bezier(.22,1,.36,1),transform .48s cubic-bezier(.22,1,.36,1),filter .44s cubic-bezier(.22,1,.36,1),visibility .44s;
+  opacity:0;visibility:hidden;pointer-events:none;transform:scale(1.05);
+  transition:opacity .46s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1),visibility .46s;
 }
-#lockscreen.show{opacity:1;visibility:visible;pointer-events:auto;transform:scale(1);filter:blur(0)}
-.lock-clock{text-align:center;transition:transform .52s cubic-bezier(.22,1,.36,1),opacity .45s ease;transform:translateY(-16px);opacity:0}
+#lockscreen.show{opacity:1;visibility:visible;pointer-events:auto;transform:scale(1)}
+.lock-clock{text-align:center;transition:transform .56s cubic-bezier(.22,1,.36,1),opacity .45s ease;transform:translateY(-22px);opacity:0}
 #lockscreen.show .lock-clock{transform:translateY(0);opacity:1}
-.lock-date{font-size:20px;font-weight:500;opacity:.88;margin-bottom:4px;text-shadow:0 2px 12px rgba(0,0,0,.35)}
-.lock-time{font-size:clamp(64px,11vw,96px);font-weight:700;letter-spacing:-2px;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 4px 24px rgba(0,0,0,.35)}
-.lock-user{display:flex;flex-direction:column;align-items:center;gap:12px;transition:transform .52s cubic-bezier(.22,1,.36,1),opacity .45s ease;transform:translateY(18px);opacity:0}
+.lock-date{font-size:21px;font-weight:500;opacity:.92;margin-bottom:4px;text-shadow:0 2px 14px rgba(0,0,0,.38)}
+.lock-time{font-size:clamp(68px,11.5vw,104px);font-weight:700;letter-spacing:-2.5px;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 6px 28px rgba(0,0,0,.35)}
+.lock-user{display:flex;flex-direction:column;align-items:center;gap:11px;transition:transform .56s cubic-bezier(.22,1,.36,1),opacity .45s ease;transform:translateY(22px);opacity:0}
 #lockscreen.show .lock-user{transform:translateY(0);opacity:1}
-#lockscreen.unlocking{opacity:0;transform:scale(1.08);filter:blur(16px);pointer-events:none}
+#lockscreen.unlocking{opacity:0;transform:scale(1.07);pointer-events:none}
 .lock-avatar{
-  width:72px;height:72px;border-radius:50%;
+  width:76px;height:76px;border-radius:50%;
   background:linear-gradient(135deg,#0a84ff,#bf5af2);
-  display:grid;place-items:center;font-size:28px;font-weight:700;
-  box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.4);
+  display:grid;place-items:center;font-size:30px;font-weight:700;
+  box-shadow:0 12px 34px rgba(0,0,0,.42),inset 0 1px 1.5px rgba(255,255,255,.5);
 }
 .lock-pass-wrap{display:flex;align-items:center;gap:6px}
+.lock-pass-wrap.shake{animation:lockShake .42s cubic-bezier(.36,.07,.19,.97)}
+@keyframes lockShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 .lock-pass{
-  width:190px;height:32px;border-radius:99px;border:1px solid rgba(255,255,255,.25);
-  background:rgba(255,255,255,.18);color:#fff;padding:0 14px;outline:none;font-size:13px;
+  width:196px;height:33px;border-radius:99px;border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.2);backdrop-filter:blur(16px);color:#fff;padding:0 14px;outline:none;font-size:13px;
+  transition:border-color .15s,background .15s;
 }
-.lock-pass::placeholder{color:rgba(255,255,255,.65)}
+.lock-pass:focus{border-color:rgba(255,255,255,.65);background:rgba(255,255,255,.26)}
+.lock-pass.err{border-color:#ff6961;background:rgba(255,59,48,.22)}
+.lock-pass::placeholder{color:rgba(255,255,255,.72)}
 .lock-go{
-  width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.24);
-  color:#fff;display:grid;place-items:center;cursor:pointer;
+  width:33px;height:33px;border-radius:50%;border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.24);
+  color:#fff;display:grid;place-items:center;cursor:pointer;transition:transform .12s,background .15s;
 }
-.lock-go:hover{background:rgba(255,255,255,.36)}
+.lock-go:hover{background:rgba(255,255,255,.38);transform:scale(1.06)}
+.lock-unlock-pill{
+  border:1px solid rgba(255,255,255,.32);background:rgba(255,255,255,.2);backdrop-filter:blur(18px);
+  color:#fff;padding:7px 20px;border-radius:99px;font-size:13px;font-weight:500;cursor:pointer;
+  transition:background .15s,transform .14s;
+}
+.lock-unlock-pill:hover{background:rgba(255,255,255,.32);transform:scale(1.04)}
+.lock-power-row{display:flex;gap:22px;margin-top:6px;opacity:.82}
+.lock-power-btn{
+  border:0;background:transparent;color:#fff;display:flex;flex-direction:column;align-items:center;gap:5px;
+  font-size:11px;cursor:pointer;opacity:.75;transition:opacity .15s,transform .15s;
+}
+.lock-power-btn:hover{opacity:1;transform:translateY(-1px)}
+.lock-power-circle{
+  width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.24);
+  display:grid;place-items:center;font-size:14px;
+}
+#sleepscreen{
+  position:fixed;inset:0;z-index:95000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.45);font-size:13px;cursor:pointer;
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s ease,visibility .5s ease;
+}
+#sleepscreen.show{opacity:1;visibility:visible;pointer-events:auto}
 
 /* ========== TOAST ========== */
 #toast{
@@ -669,6 +694,10 @@ body.win-dragging iframe{pointer-events:none!important}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ========== RESPONSIVE ========== */
+@media(max-width:1080px){
+  #dock{gap:5px;padding:6px 10px}
+  .dock-item{width:44px;height:44px}
+}
 @media(max-width:720px){
   .mb-hide-sm{display:none!important}
   .unified-shell{grid-template-columns:1fr}
@@ -683,8 +712,8 @@ body.win-dragging iframe{pointer-events:none!important}
 
 <!-- Boot Screen -->
 <div id="boot">
-  <svg width="64" height="64" viewBox="0 0 170 170" fill="#ffffff" aria-label="Apple Logo">
-    <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.13-1.9-14.34-6.08-3.69-3.03-7.61-7.82-11.77-14.37-5.11-7.86-9.31-16.95-12.6-27.27-3.48-11.06-5.23-21.74-5.23-32.04 0-12.01 2.94-22.39 8.83-31.14 5.89-8.75 13.48-13.28 22.79-13.59 4.78 0 10.22 1.46 16.32 4.35 6.1 2.9 10.02 4.39 11.77 4.49 1.4 0 5.71-1.76 12.91-5.27 6.99-3.35 12.91-4.76 17.77-4.24 13.11 1.06 22.97 6.23 29.59 15.51-11.71 7.09-17.46 16.95-17.24 29.56.22 9.86 3.79 18.08 10.71 24.64 4.86 4.65 10.7 7.67 17.52 9.07-1.41 4.12-2.92 7.89-4.54 11.31zM119.22 31.02c0 7.77-2.84 15.02-8.5 21.74-6.83 7.98-15.09 12.61-24.04 11.88-.11-.91-.17-1.88-.17-2.9 0-7.45 3.25-15.42 9.01-21.95 2.88-3.32 6.53-6.08 10.97-8.28 4.43-2.18 8.63-3.38 12.58-3.59.1 1.07.15 2.11.15 3.1z"/>
+  <svg width="74" height="74" viewBox="0 0 100 100" fill="#ffffff" aria-label="Apple Logo">
+    <path d="M50 34C55 34 60 29 67 29C74 29 80 33 83 39C73 43 70 48 70 54C70 61 76 66 84 69C81 79 74 92 65 92C58 92 55 89 50 89C45 89 42 92 35 92C25 92 16 74 16 54C16 37 25 29 34 29C41 29 45 34 50 34ZM50 27C50 17 57 9 67 8C67 18 60 26 50 27Z"/>
   </svg>
   <div class="boot-bar"><div class="boot-fill" id="boot-fill"></div></div>
   <button class="boot-skip" onclick="finishBoot()">点击跳过启动</button>
@@ -700,8 +729,8 @@ body.win-dragging iframe{pointer-events:none!important}
   <header id="menubar">
     <div class="mb-left">
       <button class="mb-item" id="mb-apple" onclick="toggleAppleMenu(event)" title="系统菜单">
-        <svg width="14" height="15" viewBox="0 0 170 170" fill="currentColor" aria-hidden="true">
-          <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.13-1.9-14.34-6.08-3.69-3.03-7.61-7.82-11.77-14.37-5.11-7.86-9.31-16.95-12.6-27.27-3.48-11.06-5.23-21.74-5.23-32.04 0-12.01 2.94-22.39 8.83-31.14 5.89-8.75 13.48-13.28 22.79-13.59 4.78 0 10.22 1.46 16.32 4.35 6.1 2.9 10.02 4.39 11.77 4.49 1.4 0 5.71-1.76 12.91-5.27 6.99-3.35 12.91-4.76 17.77-4.24 13.11 1.06 22.97 6.23 29.59 15.51-11.71 7.09-17.46 16.95-17.24 29.56.22 9.86 3.79 18.08 10.71 24.64 4.86 4.65 10.7 7.67 17.52 9.07-1.41 4.12-2.92 7.89-4.54 11.31zM119.22 31.02c0 7.77-2.84 15.02-8.5 21.74-6.83 7.98-15.09 12.61-24.04 11.88-.11-.91-.17-1.88-.17-2.9 0-7.45 3.25-15.42 9.01-21.95 2.88-3.32 6.53-6.08 10.97-8.28 4.43-2.18 8.63-3.38 12.58-3.59.1 1.07.15 2.11.15 3.1z"/>
+        <svg width="15" height="15" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+          <path d="M50 34C55 34 60 29 67 29C74 29 80 33 83 39C73 43 70 48 70 54C70 61 76 66 84 69C81 79 74 92 65 92C58 92 55 89 50 89C45 89 42 92 35 92C25 92 16 74 16 54C16 37 25 29 34 29C41 29 45 34 50 34ZM50 27C50 17 57 9 67 8C67 18 60 26 50 27Z"/>
         </svg>
       </button>
       <button class="mb-item mb-appname" id="mb-active-app" onclick="toggleAppDropdown(event)">访达</button>
@@ -825,18 +854,28 @@ body.win-dragging iframe{pointer-events:none!important}
 <!-- Lock Screen -->
 <div id="lockscreen">
   <div class="lock-clock">
-    <div class="lock-date" id="lock-date">11月15日 星期日</div>
-    <div class="lock-time" id="lock-time">11:20</div>
+    <div class="lock-date" id="lock-date">11月16日 星期一</div>
+    <div class="lock-time" id="lock-time">13:05</div>
   </div>
   <div class="lock-user">
-    <div class="lock-avatar">X</div>
-    <div style="font-size:16px;font-weight:600">XXUUS</div>
-    <div class="lock-pass-wrap">
-      <input type="password" class="lock-pass" id="lock-input" placeholder="输入任意密码或直接回车" onkeydown="if(event.key==='Enter')unlockScreen()">
-      <button class="lock-go" onclick="unlockScreen()">→</button>
+    <div class="lock-avatar" id="lock-avatar">X</div>
+    <div id="lock-username" style="font-size:17px;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,.35)">XXUUS</div>
+    <div class="lock-pass-wrap" id="lock-pass-wrap">
+      <input type="password" class="lock-pass" id="lock-input" placeholder="输入登录密码" onkeydown="if(event.key==='Enter')unlockScreen()">
+      <button class="lock-go" id="lock-go-btn" onclick="unlockScreen()" title="解锁">→</button>
     </div>
-    <div style="font-size:11.5px;opacity:.6">触控 ID 或按 Enter 解锁</div>
+    <button class="lock-unlock-pill" id="lock-quick-btn" onclick="unlockScreen()" style="display:none">点击进入桌面</button>
+    <div id="lock-hint-text" style="font-size:11.5px;opacity:.75;min-height:16px">按 Enter 或点击解锁</div>
+    <div class="lock-power-row">
+      <button class="lock-power-btn" onclick="sleepScreen()"><span class="lock-power-circle">☾</span><span>睡眠</span></button>
+      <button class="lock-power-btn" onclick="rebootSystem()"><span class="lock-power-circle">↻</span><span>重新启动</span></button>
+    </div>
   </div>
+</div>
+
+<!-- Sleep Screen -->
+<div id="sleepscreen" onclick="wakeFromSleep()">
+  <span>显示器已睡眠 · 点击任意处或按任意键唤醒</span>
 </div>
 
 <div id="toast"></div>
@@ -950,6 +989,10 @@ const STATE = {
   wallpaper: Number(localStorage.getItem('xxuus-wp') || 0),
   dockMag: localStorage.getItem('xxuus-mag') !== 'false',
   showDeskIcons: localStorage.getItem('xxuus-desk') !== 'false',
+  userName: localStorage.getItem('xxuus-user') || 'XXUUS',
+  passcode: localStorage.getItem('xxuus-pass') || '',
+  passHint: localStorage.getItem('xxuus-hint') || '',
+  bootToLock: localStorage.getItem('xxuus-bootlock') === 'true',
   windows: {},
   winOffset: 0,
   finderFolder: 'desktop',
@@ -1119,10 +1162,10 @@ function getAppIconSVG(id, size=48){
       <circle cx="32" cy="32" r="2.6" fill="#9ca3af"/>`,
     about: `
       <defs>
-        <linearGradient id="ab-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f8fafc"/><stop offset="100%" stop-color="#cbd5e1"/></linearGradient>
+        <linearGradient id="ab-${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e2e8f0"/></linearGradient>
       </defs>
       <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#ab-${u})"/>
-      <path fill="#111827" transform="translate(15,13) scale(0.2)" d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.13-1.9-14.34-6.08-3.69-3.03-7.61-7.82-11.77-14.37-5.11-7.86-9.31-16.95-12.6-27.27-3.48-11.06-5.23-21.74-5.23-32.04 0-12.01 2.94-22.39 8.83-31.14 5.89-8.75 13.48-13.28 22.79-13.59 4.78 0 10.22 1.46 16.32 4.35 6.1 2.9 10.02 4.39 11.77 4.49 1.4 0 5.71-1.76 12.91-5.27 6.99-3.35 12.91-4.76 17.77-4.24 13.11 1.06 22.97 6.23 29.59 15.51-11.71 7.09-17.46 16.95-17.24 29.56.22 9.86 3.79 18.08 10.71 24.64 4.86 4.65 10.7 7.67 17.52 9.07-1.41 4.12-2.92 7.89-4.54 11.31zM119.22 31.02c0 7.77-2.84 15.02-8.5 21.74-6.83 7.98-15.09 12.61-24.04 11.88-.11-.91-.17-1.88-.17-2.9 0-7.45 3.25-15.42 9.01-21.95 2.88-3.32 6.53-6.08 10.97-8.28 4.43-2.18 8.63-3.38 12.58-3.59.1 1.07.15 2.11.15 3.1z"/>`,
+      <path fill="#0a0a0c" transform="translate(12,11) scale(0.40)" d="M50 34C55 34 60 29 67 29C74 29 80 33 83 39C73 43 70 48 70 54C70 61 76 66 84 69C81 79 74 92 65 92C58 92 55 89 50 89C45 89 42 92 35 92C25 92 16 74 16 54C16 37 25 29 34 29C41 29 45 34 50 34ZM50 27C50 17 57 9 67 8C67 18 60 26 50 27Z"/>`,
     minecraft: `
       <defs>
         <linearGradient id="mcBg-${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="55%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
@@ -1180,11 +1223,31 @@ function getAppIconSVG(id, size=48){
       <line x1="17" y1="37" x2="43" y2="37" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
       <line x1="17" y1="45" x2="33" y2="45" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>`
   };
-  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">${icons[id]||icons.file}<path d="M17 4.2H47C54 4.2 59.8 10 59.8 17V24C46 21 18 21 4.2 24V17C4.2 10 10 4.2 17 4.2Z" fill="#fff" fill-opacity=".14"/><rect x="3.5" y="3.5" width="57" height="57" rx="13.5" fill="none" stroke="#fff" stroke-opacity=".34" stroke-width="1"/></svg>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">${icons[id]||icons.file}${id==='about'?'':'<path d="M17 4.2H47C54 4.2 59.8 10 59.8 17V24C46 21 18 21 4.2 24V17C4.2 10 10 4.2 17 4.2Z" fill="#fff" fill-opacity=".14"/>'}<rect x="3.5" y="3.5" width="57" height="57" rx="13.5" fill="none" stroke="#fff" stroke-opacity=".34" stroke-width="1"/></svg>`;
 }
 
 /* ===================== BOOT & CLOCK ===================== */
-function finishBoot(){document.getElementById('boot').classList.add('done')}
+function finishBoot(){
+  if(STATE.passcode || STATE.bootToLock){
+    lockScreen(true);
+  }
+  document.getElementById('boot').classList.add('done');
+}
+function rebootSystem(){
+  closeAllMenus();
+  const ls = document.getElementById('lockscreen');
+  ls.classList.remove('show','unlocking');
+  document.body.classList.remove('is-locked');
+  const boot = document.getElementById('boot');
+  const fill = document.getElementById('boot-fill');
+  fill.style.transition = 'none';
+  fill.style.width = '0%';
+  boot.classList.remove('done');
+  void fill.offsetWidth;
+  fill.style.transition = 'width 1.15s cubic-bezier(.22,1,.36,1)';
+  setTimeout(()=>{ fill.style.width = '100%'; }, 60);
+  setTimeout(finishBoot, 1250);
+}
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{document.getElementById('boot-fill').style.width='100%'},60);
   setTimeout(finishBoot,1150);
@@ -1330,11 +1393,7 @@ function buildDock(){
     b.className = 'dock-item';
     b.dataset.app = app.id;
     b.innerHTML = `${getAppIconSVG(app.id, 48)}<span class="dock-tip">${app.name}</span>`;
-    b.onclick = ()=>{
-      b.classList.remove('dock-bounce'); void b.offsetWidth;
-      if(!STATE.windows[app.id]) b.classList.add('dock-bounce');
-      openApp(app.id);
-    };
+    b.onclick = ()=>dockAppClick(app.id);
     dock.appendChild(b);
   });
 
@@ -1399,12 +1458,22 @@ function trafficHTML(id){
 
 function getDockOriginOffset(win, id){
   const dockBtn = document.querySelector(`.dock-item[data-app="${id}"]`);
-  const left = parseFloat(win.style.left) || 0;
-  const top = parseFloat(win.style.top) || 0;
-  const w = win.offsetWidth || parseFloat(win.style.width) || 640;
-  const h = win.offsetHeight || parseFloat(win.style.height) || 440;
-  const winCx = left + w / 2;
-  const winCy = top + h / 2;
+  const wr = win.getBoundingClientRect();
+  let winCx, winCy;
+  if(wr.width > 10 && wr.height > 10 && !win.classList.contains('minimized')){
+    winCx = wr.left + wr.width / 2;
+    winCy = wr.top + wr.height / 2;
+  } else if(win.classList.contains('maximized')){
+    winCx = window.innerWidth / 2;
+    winCy = 28 + (window.innerHeight - 110) / 2;
+  } else {
+    const left = parseFloat(win.style.left) || 0;
+    const top = parseFloat(win.style.top) || 0;
+    const w = parseFloat(win.style.width) || 640;
+    const h = parseFloat(win.style.height) || 440;
+    winCx = left + w / 2;
+    winCy = top + h / 2;
+  }
   let targetX = window.innerWidth / 2;
   let targetY = window.innerHeight - 40;
   if(dockBtn){
@@ -1425,6 +1494,55 @@ function bounceDockIcon(id){
   dockBtn._bt = setTimeout(()=>dockBtn.classList.remove('dock-bounce'), 560);
 }
 
+function animateWindowDock(w, id, dir, onDone){
+  if(w._dockAnim){
+    w._dockAnimCancelled = true;
+    try{ w._dockAnim.cancel(); }catch(e){}
+    w._dockAnim = null;
+  }
+  w._dockAnimCancelled = false;
+  if(!w.animate){ if(onDone) onDone(); return; }
+  const { dx, dy } = getDockOriginOffset(w, id);
+  if(dir === 'open'){
+    w._dockAnim = w.animate([
+      { transform:`translate3d(${dx}px,${dy}px,0) scale(0.06,0.10)`, opacity:0.12 },
+      { transform:`translate3d(${Math.round(dx*0.26)}px,${Math.round(dy*0.20)}px,0) scale(0.68,0.76)`, opacity:0.96, offset:0.36 },
+      { transform:'translate3d(0,0,0) scale(1.014)', opacity:1, offset:0.78 },
+      { transform:'translate3d(0,0,0) scale(1)', opacity:1 }
+    ], { duration:430, easing:'cubic-bezier(0.18,1.0,0.28,1)' });
+    w._dockAnim.onfinish = ()=>{ w._dockAnim = null; if(onDone) onDone(); };
+  } else {
+    w._dockAnim = w.animate([
+      { transform:'translate3d(0,0,0) scale(1)', opacity:1 },
+      { transform:`translate3d(${Math.round(dx*0.32)}px,${Math.round(dy*0.26)}px,0) scale(0.62,0.72)`, opacity:0.94, offset:0.38 },
+      { transform:`translate3d(${dx}px,${dy}px,0) scale(0.06,0.10)`, opacity:0.04 }
+    ], { duration:360, easing:'cubic-bezier(0.32,0.04,0.25,1)', fill:'forwards' });
+    w._dockAnim.onfinish = ()=>{
+      const cancelled = w._dockAnimCancelled;
+      try{ w._dockAnim?.cancel(); }catch(e){}
+      w._dockAnim = null;
+      if(!cancelled && onDone) onDone();
+    };
+  }
+}
+
+function dockAppClick(id){
+  const w = STATE.windows[id];
+  if(!w){
+    openApp(id);
+    return;
+  }
+  if(w.classList.contains('minimized')){
+    openApp(id);
+    return;
+  }
+  if(STATE.activeApp === id){
+    minWin(id);
+  } else {
+    focusWin(id);
+  }
+}
+
 function openApp(id){
   toggleLaunchpad(false);
   closeAllMenus();
@@ -1433,24 +1551,20 @@ function openApp(id){
 
   if(STATE.windows[id]){
     const w = STATE.windows[id];
-    if(w.classList.contains('closing')){
-      w.classList.remove('closing');
-    }
-    if(w.classList.contains('minimized')){
-      const { dx, dy } = getDockOriginOffset(w, id);
-      w.style.setProperty('--dock-dx', dx + 'px');
-      w.style.setProperty('--dock-dy', dy + 'px');
-      void w.offsetWidth;
-      w.classList.remove('minimized');
-    }
+    const wasMin = w.classList.contains('minimized') || !!w._dockAnim;
+    w.classList.remove('minimized','closing');
     focusWin(id);
+    if(wasMin){
+      bounceDockIcon(id);
+      animateWindowDock(w, id, 'open');
+    }
     return;
   }
 
   bounceDockIcon(id);
 
   const win = document.createElement('section');
-  win.className = 'window dock-preopen';
+  win.className = 'window';
   win.id = 'win-' + id;
   const maxW = Math.min(app.w, window.innerWidth - 24);
   const maxH = Math.min(app.h, window.innerHeight - 116);
@@ -1479,22 +1593,25 @@ function openApp(id){
     win.innerHTML += `<div class="resizer resizer-r"></div><div class="resizer resizer-b"></div><div class="resizer resizer-br"></div>`;
   }
 
-  const { dx, dy } = getDockOriginOffset(win, id);
-  win.style.setProperty('--dock-dx', dx + 'px');
-  win.style.setProperty('--dock-dy', dy + 'px');
-
   document.getElementById('windows').appendChild(win);
   STATE.windows[id] = win;
   wireWindowPhysics(win, id, app.noResize);
   initAppRuntime(id, win);
   focusWin(id);
   updateDockDots();
+  animateWindowDock(win, id, 'open');
+}
 
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      win.classList.remove('dock-preopen');
-    });
-  });
+function focusTopVisible(excludeId){
+  const visible = Object.keys(STATE.windows).filter(k => k!==excludeId && !STATE.windows[k].classList.contains('minimized'));
+  if(visible.length){
+    const topId = visible.sort((a,b)=>Number(STATE.windows[b].style.zIndex)-Number(STATE.windows[a].style.zIndex))[0];
+    focusWin(topId);
+  } else {
+    STATE.activeApp = null;
+    Object.values(STATE.windows).forEach(w=>w.classList.remove('active-win'));
+    document.getElementById('mb-active-app').textContent = '访达';
+  }
 }
 
 function focusWin(id){
@@ -1512,28 +1629,30 @@ function closeWin(id, e){
   if(e) e.stopPropagation();
   const w = STATE.windows[id];
   if(!w) return;
+  if(w._dockAnim){ w._dockAnimCancelled = true; try{ w._dockAnim.cancel(); }catch(err){} w._dockAnim = null; }
   delete STATE.windows[id];
   updateDockDots();
-  const remaining = Object.keys(STATE.windows);
-  if(remaining.length){
-    const topId = remaining.sort((a,b)=>Number(STATE.windows[b].style.zIndex)-Number(STATE.windows[a].style.zIndex))[0];
-    focusWin(topId);
-  } else {
-    document.getElementById('mb-active-app').textContent = '访达';
-  }
+  focusTopVisible(id);
   w.querySelectorAll('iframe').forEach(fr=>{ try{ fr.src = 'about:blank'; }catch(err){} });
-  w.classList.add('closing');
-  setTimeout(()=>{ w.remove(); }, 200);
+  if(w.animate){
+    const anim = w.animate([
+      { transform:'scale(1)', opacity:1 },
+      { transform:'scale(0.91) translateY(8px)', opacity:0 }
+    ], { duration:190, easing:'cubic-bezier(0.4,0,1,1)', fill:'forwards' });
+    anim.onfinish = ()=>w.remove();
+  } else {
+    w.remove();
+  }
 }
 
 function minWin(id, e){
   if(e) e.stopPropagation();
   const w = STATE.windows[id];
-  if(!w) return;
-  const { dx, dy } = getDockOriginOffset(w, id);
-  w.style.setProperty('--dock-dx', dx + 'px');
-  w.style.setProperty('--dock-dy', dy + 'px');
-  w.classList.add('minimized');
+  if(!w || w.classList.contains('minimized')) return;
+  focusTopVisible(id);
+  animateWindowDock(w, id, 'min', ()=>{
+    w.classList.add('minimized');
+  });
 }
 
 function zoomWin(id, e){
@@ -1790,7 +1909,7 @@ function renderAppContent(id){
         <div style="border-radius:14px;padding:16px;background:var(--card-bg);border:1px solid var(--hairline)">
           <span class="tag-pill">Web OS</span>
           <h3 style="margin:10px 0 6px;font-size:16px">XXUUS OS 桌面系统</h3>
-          <p style="margin:0;font-size:12.5px;color:var(--text-2);line-height:1.55">仿 macOS Sequoia 的纯静态浏览器桌面系统，部署于 xxuus.com/os/。</p>
+          <p style="margin:0;font-size:12.5px;color:var(--text-2);line-height:1.55">仿 macOS 27 Liquid Glass 的纯静态浏览器桌面系统，部署于 xxuus.com。</p>
         </div>
       </div>
     </div>`;
@@ -1839,12 +1958,13 @@ function renderAppContent(id){
         <div class="sidebar-top" data-drag-handle>${trafficHTML('settings')}</div>
         <div class="sidebar-scroll">
           <div style="display:flex;align-items:center;gap:10px;padding:8px 10px 14px">
-            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0a84ff,#bf5af2);display:grid;place-items:center;color:#fff;font-weight:700">X</div>
-            <div><div style="font-size:13px;font-weight:600">XXUUS</div><div style="font-size:11px;color:var(--text-2)">本地离线账户</div></div>
+            <div id="set-user-av" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0a84ff,#bf5af2);display:grid;place-items:center;color:#fff;font-weight:700">${(STATE.userName||'X')[0].toUpperCase()}</div>
+            <div><div id="set-user-name" style="font-size:13px;font-weight:600">${STATE.userName||'XXUUS'}</div><div style="font-size:11px;color:var(--text-2)">本地离线账户</div></div>
           </div>
           <button class="side-item active" onclick="renderSettingsTab('appearance',this)">🎨 外观与主题色</button>
           <button class="side-item" onclick="renderSettingsTab('wallpaper',this)">🖼️ 桌面壁纸</button>
           <button class="side-item" onclick="renderSettingsTab('dock',this)">🚀 程序坞与桌面</button>
+          <button class="side-item" onclick="renderSettingsTab('security',this)">🔒 锁屏与密码</button>
           <button class="side-item" onclick="renderSettingsTab('general',this)">⚙️ 通用与关于</button>
         </div>
       </aside>
@@ -1866,7 +1986,7 @@ function renderAppContent(id){
         <div style="display:flex;justify-content:space-between"><span style="color:var(--text-2)">处理器</span><span>Browser Neural Engine</span></div>
         <div style="display:flex;justify-content:space-between"><span style="color:var(--text-2)">运行模式</span><span>100% 离线纯静态前端</span></div>
         <div style="display:flex;justify-content:space-between"><span style="color:var(--text-2)">本地存储</span><span>LocalStorage Ready</span></div>
-        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-2)">域名目标</span><span>xxuus.com/os/</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-2)">域名目标</span><span>xxuus.com</span></div>
       </div>
       <div style="display:flex;gap:10px;margin-top:4px">
         <button class="btn-mac" onclick="openApp('settings')">系统设置...</button>
@@ -2226,7 +2346,7 @@ function initTerminal(win){
       else res='未找到应用。可输入：finder, safari, notes, calendar, calculator, music, portfolio, lab, saltline, csgo, minecraft, settings';
     }
     else if(cmd==='neofetch'){
-      res = `   __  __ __  __ _   _ _   _ ____     OS: XXUUS OS Sequoia Web 2.0\n   \\ \\/ / \\ \\/ /| | | | | | / ___|    Host: Browser Offline Runtime\n    \\  /   \\  / | | | | | | \\___ \\    Theme: ${STATE.theme} / Accent: ${STATE.accent}\n    /  \\   /  \\ | |_| | |_| |___) |   Shell: zsh 5.9 (simulated)\n   /_/\\_\\ /_/\\_\\ \\___/ \\___/|____/    Deploy: xxuus.com/os/`;
+      res = `   __  __ __  __ _   _ _   _ ____     OS: XXUUS OS macOS 27 Web\n   \\ \\/ / \\ \\/ /| | | | | | / ___|    Host: Browser Offline Runtime\n    \\  /   \\  / | | | | | | \\___ \\    Theme: ${STATE.theme} / Accent: ${STATE.accent}\n    /  \\   /  \\ | |_| | |_| |___) |   Shell: zsh 5.9 (simulated)\n   /_/\\_\\ /_/\\_\\ \\___/ \\___/|____/    Deploy: xxuus.com`;
     }
     else if(cmd) res = `zsh: command not found: ${cmd}`;
 
@@ -2596,6 +2716,35 @@ function renderSettingsTab(tab, btn){
         <input type="checkbox" ${STATE.showDeskIcons?'checked':''} onchange="STATE.showDeskIcons=this.checked;localStorage.setItem('xxuus-desk',this.checked);buildDesktopIcons()">
       </label>
     </div>`;
+  } else if(tab==='security'){
+    title.textContent = '锁屏与登录密码';
+    pane.innerHTML = `
+      <div class="cc-card" style="margin-bottom:14px;gap:10px">
+        <strong style="font-size:14px">用户名称与登录密码</strong>
+        <div style="display:grid;gap:8px;margin-top:4px">
+          <label style="font-size:12px;color:var(--text-2)">显示名称
+            <input id="sec-user" class="spot-input-row" style="width:100%;margin-top:4px;padding:7px 10px;border-radius:8px;border:1px solid var(--hairline);background:var(--input-bg);font-size:13px" value="${STATE.userName.replace(/"/g,'&quot;')}">
+          </label>
+          <label style="font-size:12px;color:var(--text-2)">登录密码（留空表示无需密码直接解锁）
+            <input id="sec-pass" type="password" placeholder="输入新密码，或留空清除密码" style="width:100%;margin-top:4px;padding:7px 10px;border-radius:8px;border:1px solid var(--hairline);background:var(--input-bg);font-size:13px;outline:none" value="${STATE.passcode.replace(/"/g,'&quot;')}">
+          </label>
+          <label style="font-size:12px;color:var(--text-2)">密码提示（输错密码时显示）
+            <input id="sec-hint" placeholder="例如：我的生日 / 常用数字" style="width:100%;margin-top:4px;padding:7px 10px;border-radius:8px;border:1px solid var(--hairline);background:var(--input-bg);font-size:13px;outline:none" value="${STATE.passHint.replace(/"/g,'&quot;')}">
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
+          <button class="btn-mac btn-primary" onclick="saveSecuritySettings()">保存设置</button>
+          <button class="btn-mac" onclick="clearSecurityPass()">清除密码</button>
+          <button class="btn-mac" onclick="lockScreen()">立即锁定屏幕测试</button>
+        </div>
+      </div>
+      <div class="cc-card" style="gap:10px">
+        <label style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
+          <span>每次开机动画完成后先进入锁屏界面</span>
+          <input type="checkbox" ${(STATE.bootToLock || !!STATE.passcode)?'checked':''} onchange="STATE.bootToLock=this.checked;localStorage.setItem('xxuus-bootlock',this.checked);toast('已更新开机锁屏设置')">
+        </label>
+        <div style="font-size:11.5px;color:var(--text-2)">当前状态：${STATE.passcode ? '已启用登录密码保护 🔒' : '免密快速解锁（推荐测试后设置密码体验真实 Mac 解锁）'}</div>
+      </div>`;
   } else {
     title.textContent = '通用与部署信息';
     pane.innerHTML = `<div class="cc-card">
@@ -2636,8 +2785,9 @@ function toggleAppleMenu(e){
     {label:'系统设置...', fn:()=>openApp('settings')},
     {label:'启动台', kbd:'Launchpad', fn:()=>toggleLaunchpad(true)},
     '-',
-    {label:'锁定屏幕', kbd:'⌃⌘Q', fn:()=>lockScreen()},
-    {label:'重新启动演示', fn:()=>location.reload()}
+    {label:'锁定屏幕', kbd:'Alt+L', fn:()=>lockScreen()},
+    {label:'睡眠', fn:()=>sleepScreen()},
+    {label:'重新启动...', fn:()=>rebootSystem()}
   ]);
 }
 function toggleAppDropdown(e){
@@ -2761,23 +2911,110 @@ function renderLaunchpad(){
     </button>`).join('');
 }
 
-/* Lock & Toast */
-function lockScreen(){
+/* Lock, Security & Sleep */
+function saveSecuritySettings(){
+  const u = (document.getElementById('sec-user')?.value || '').trim() || 'XXUUS';
+  const p = (document.getElementById('sec-pass')?.value || '');
+  const h = (document.getElementById('sec-hint')?.value || '').trim();
+  STATE.userName = u;
+  STATE.passcode = p;
+  STATE.passHint = h;
+  localStorage.setItem('xxuus-user', u);
+  localStorage.setItem('xxuus-pass', p);
+  localStorage.setItem('xxuus-hint', h);
+  if(p){ STATE.bootToLock = true; localStorage.setItem('xxuus-bootlock', 'true'); }
+  const su = document.getElementById('set-user-name'); if(su) su.textContent = u;
+  const sav = document.getElementById('set-user-av'); if(sav) sav.textContent = u[0].toUpperCase();
+  updateLockUI();
+  toast(p ? '已保存锁屏密码，锁定后需输入密码进入' : '已保存用户信息（无密码模式）');
+  renderSettingsTab('security');
+}
+function clearSecurityPass(){
+  STATE.passcode = '';
+  STATE.passHint = '';
+  localStorage.removeItem('xxuus-pass');
+  localStorage.removeItem('xxuus-hint');
+  updateLockUI();
+  toast('已清除登录密码');
+  renderSettingsTab('security');
+}
+function updateLockUI(){
+  const name = STATE.userName || 'XXUUS';
+  const av = document.getElementById('lock-avatar');
+  const un = document.getElementById('lock-username');
+  const pwWrap = document.getElementById('lock-pass-wrap');
+  const qBtn = document.getElementById('lock-quick-btn');
+  const hintEl = document.getElementById('lock-hint-text');
+  const inp = document.getElementById('lock-input');
+  if(av) av.textContent = name[0].toUpperCase();
+  if(un) un.textContent = name;
+  if(STATE.passcode){
+    if(pwWrap) pwWrap.style.display = 'flex';
+    if(qBtn) qBtn.style.display = 'none';
+    if(inp){ inp.placeholder = '输入登录密码'; inp.classList.remove('err'); }
+    if(hintEl) hintEl.textContent = '按 Enter 验证密码解锁';
+  } else {
+    if(pwWrap) pwWrap.style.display = 'none';
+    if(qBtn) qBtn.style.display = 'inline-block';
+    if(hintEl) hintEl.textContent = '未设置密码（可在系统设置 → 锁屏与密码中设置）';
+  }
+}
+function lockScreen(immediate=false){
   closeAllMenus();
+  closeSpotlight();
+  toggleLaunchpad(false);
+  updateLockUI();
   const ls = document.getElementById('lockscreen');
   ls.classList.remove('unlocking');
   document.body.classList.add('is-locked');
-  requestAnimationFrame(()=>{ ls.classList.add('show'); });
-  setTimeout(()=>{ const inp = document.getElementById('lock-input'); if(inp){ inp.value=''; inp.focus(); } }, 240);
+  if(immediate){
+    ls.classList.add('show');
+  } else {
+    requestAnimationFrame(()=>{ ls.classList.add('show'); });
+  }
+  setTimeout(()=>{
+    const inp = document.getElementById('lock-input');
+    if(inp && STATE.passcode){ inp.value=''; inp.focus(); }
+  }, 240);
 }
 function unlockScreen(){
   const ls = document.getElementById('lockscreen');
   if(!ls.classList.contains('show')) return;
+  const inp = document.getElementById('lock-input');
+  const wrap = document.getElementById('lock-pass-wrap');
+  const hintEl = document.getElementById('lock-hint-text');
+  if(STATE.passcode){
+    const entered = inp ? inp.value : '';
+    if(entered !== STATE.passcode){
+      if(inp){ inp.classList.add('err'); inp.value=''; inp.focus(); }
+      if(wrap){ wrap.classList.remove('shake'); void wrap.offsetWidth; wrap.classList.add('shake'); }
+      if(hintEl) hintEl.textContent = STATE.passHint ? ('密码错误 · 提示：' + STATE.passHint) : '密码错误，请重新输入';
+      return;
+    }
+  }
+  const goBtn = document.getElementById('lock-go-btn');
+  if(goBtn) goBtn.textContent = '✓';
   ls.classList.add('unlocking');
   ls.classList.remove('show');
   document.body.classList.remove('is-locked');
-  document.getElementById('lock-input').value='';
-  setTimeout(()=>{ ls.classList.remove('unlocking'); toast('欢迎回来，XXUUS'); }, 360);
+  if(inp){ inp.value=''; inp.classList.remove('err'); }
+  setTimeout(()=>{
+    ls.classList.remove('unlocking');
+    if(goBtn) goBtn.textContent = '→';
+    toast('欢迎回来，' + (STATE.userName || 'XXUUS'));
+  }, 420);
+}
+function sleepScreen(){
+  document.getElementById('sleepscreen').classList.add('show');
+}
+function wakeFromSleep(){
+  const s = document.getElementById('sleepscreen');
+  if(!s.classList.contains('show')) return;
+  s.classList.remove('show');
+  setTimeout(()=>{
+    const inp = document.getElementById('lock-input');
+    if(inp && STATE.passcode) inp.focus();
+  }, 200);
 }
 function toast(msg){
   const t = document.getElementById('toast');
@@ -2787,7 +3024,13 @@ function toast(msg){
 
 /* Keyboard Shortcuts */
 document.addEventListener('keydown', e=>{
+  if(document.getElementById('sleepscreen')?.classList.contains('show')){ wakeFromSleep(); return; }
+  if(document.getElementById('lockscreen')?.classList.contains('show')){
+    if(e.key === 'Enter' && !STATE.passcode) unlockScreen();
+    return;
+  }
   if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){e.preventDefault();openSpotlight()}
+  if(e.altKey && e.key.toLowerCase()==='l'){e.preventDefault();lockScreen()}
   if(e.key==='Escape'){closeSpotlight();toggleLaunchpad(false);closeAllMenus()}
 });
 
