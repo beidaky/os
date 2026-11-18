@@ -5,5 +5,11 @@ window.XXUUS_PUBLIC_FILES = [
     "size": 184292,
     "ext": "pdf",
     "mtime": "2025-07-29"
+  },
+  {
+    "name": "成果截图-061123122_张煦.docx",
+    "size": 583937,
+    "ext": "docx",
+    "mtime": "2026-11-17"
   }
 ];
